@@ -1,0 +1,77 @@
+[
+  {
+    "name": "single_action",
+    "prompt": "walk forward",
+    "segments": [{"action": "walk", "direction": "forward"}],
+    "routing_hints": []
+  },
+  {
+    "name": "sequential_actions",
+    "prompt": "wave the right hand three times and sit down",
+    "segments": [
+      {"action": "wave", "body_parts": ["right_hand"], "repetition": 3},
+      {"action": "sit_down"}
+    ],
+    "routing_hints": []
+  },
+  {
+    "name": "simultaneous_actions",
+    "prompt": "walk forward while waving the right hand",
+    "segments": [{"action": "walk", "secondary_contains": "wave right hand"}],
+    "routing_hints": []
+  },
+  {
+    "name": "explicit_time",
+    "prompt": "at 3 seconds raise the right arm",
+    "segments": [{"action": "raise", "body_parts": ["right_arm"], "explicit_event_time_s": 3.0}],
+    "routing_hints": []
+  },
+  {
+    "name": "implicit_time",
+    "prompt": "walk forward then sit down",
+    "segments": [{"action": "walk"}, {"action": "sit_down"}],
+    "routing_hints": []
+  },
+  {
+    "name": "repetition",
+    "prompt": "wave the right hand three times",
+    "segments": [{"action": "wave", "repetition": 3}],
+    "routing_hints": []
+  },
+  {
+    "name": "rare_style",
+    "prompt": "walk with an unusual asymmetric limping gait",
+    "segments": [{"action": "walk", "style": ["unusual", "asymmetric", "limping"]}],
+    "routing_hints": [{"intent_type": "retrieval_candidate", "reason_code": "RARE_STYLE"}]
+  },
+  {
+    "name": "contact",
+    "prompt": "touch the table with the right hand",
+    "segments": [{"action": "reach_and_contact", "body_parts": ["right_hand"]}],
+    "routing_hints": [{"intent_type": "constraint_candidate", "reason_code": "EXPLICIT_CONTACT"}]
+  },
+  {
+    "name": "trajectory",
+    "prompt": "walk forward following a circular path",
+    "segments": [{"action": "walk", "direction": "forward"}],
+    "routing_hints": [{"intent_type": "constraint_candidate", "reason_code": "ROOT_TRAJECTORY"}]
+  },
+  {
+    "name": "keyframe",
+    "prompt": "finish in a stable seated whole-body pose",
+    "segments": [{"action": "finish_stable_seated_pose"}],
+    "routing_hints": [{"intent_type": "keyframe_candidate", "reason_code": "WHOLE_BODY_END_STATE"}]
+  },
+  {
+    "name": "long_prompt",
+    "prompt": "walk forward then wave the right hand three times then sit down",
+    "segments": [{"action": "walk"}, {"action": "wave", "repetition": 3}, {"action": "sit_down"}],
+    "routing_hints": []
+  },
+  {
+    "name": "before_relation",
+    "prompt": "raise the right arm before sit down",
+    "segments": [{"action": "raise"}, {"action": "sit_down"}],
+    "routing_hints": []
+  }
+]

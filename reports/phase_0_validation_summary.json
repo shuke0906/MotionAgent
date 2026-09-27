@@ -1,0 +1,60 @@
+{
+  "schema_version": 1,
+  "validated_at": "2026-09-27",
+  "environment": {
+    "gpu": "NVIDIA A100-SXM4-80GB",
+    "vram_mib": 81920,
+    "driver": "580.126.16",
+    "python": "3.10.18",
+    "pytorch": "2.6.0+cu124",
+    "cuda_runtime": "12.4"
+  },
+  "checkpoint": {
+    "source": "nvidia/GEM-X",
+    "filename": "gem_smpl.ckpt",
+    "size_bytes": 5518923941,
+    "sha256": "1d15cbe2864d6de61a75e83fdbfe83bec3c7b183eee3d3dcdbd9107e4456454a"
+  },
+  "main_case": {
+    "prompt": "a person walks forward",
+    "seed": 7,
+    "pred_x_shape": [1, 300, 151],
+    "pred_x_min": -2.240196704864502,
+    "pred_x_max": 2.0294535160064697,
+    "pred_x_mean": -0.011164313182234764,
+    "pred_x_std": 0.3349970281124115,
+    "finite": true,
+    "latency_seconds": 5.574334743898362,
+    "peak_allocated_gib": 6.726688385009766,
+    "body_params_global_shapes": {
+      "body_pose": [300, 63],
+      "global_orient": [300, 3],
+      "transl": [300, 3],
+      "betas": [300, 10]
+    }
+  },
+  "comparisons": {
+    "same_prompt_same_seed": {
+      "mean_abs_diff": 0.0,
+      "max_abs_diff": 0.0,
+      "equal": true
+    },
+    "same_prompt_seed_7_vs_8": {
+      "mean_abs_diff": 0.12399036437273026,
+      "max_abs_diff": 2.313023805618286,
+      "equal": false
+    },
+    "sit_vs_right_arm_same_seed": {
+      "mean_abs_diff": 0.2788711488246918,
+      "max_abs_diff": 3.2747511863708496,
+      "equal": false
+    }
+  },
+  "remote_bundle_names": [
+    "walk_seed7_run1.pt",
+    "walk_seed7_run2.pt",
+    "walk_seed8.pt",
+    "sit_seed11.pt",
+    "right_arm_seed11.pt"
+  ]
+}

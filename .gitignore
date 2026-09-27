@@ -1,0 +1,62 @@
+# Python environments and caches
+.venv/
+venv/
+env/
+**/.venv/
+**/__pycache__/
+*.py[cod]
+*.pyo
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+**/cache/
+**/.cache/
+
+# Local/editor noise
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# Credentials and machine-local connection material
+.env
+.env.*
+*.pem
+*.key
+id_rsa*
+id_ed25519*
+known_hosts
+
+# External model/runtime assets
+*.ckpt
+gem_smpl.ckpt
+SMPLX_NEUTRAL.npz
+**/inputs/pretrained/
+**/inputs/checkpoints/body_models/
+**/body_models/
+**/smplx/
+**/SMPLX*/
+**/hf_cache/
+**/huggingface/
+
+# Generated tensor artifacts and runtime outputs
+artifacts/
+outputs/
+**/outputs/
+*.pt
+*.pth
+*.npz
+*.npy
+*.sqlite
+*.sqlite3
+
+# Do not publish a full duplicate of upstream GENMO.
+# MotionAgent's small adapter/demo patch lives under integrations/GENMO/.
+vendor/GENMO/
+vendor/GENMO/**
+
+# Committed README demo asset
+!docs/
+!docs/assets/
+!docs/assets/demo/
+!docs/assets/demo/motionagent_demo.gif
