@@ -10,7 +10,7 @@ from motion_agent.graph.state import GraphState
 from motion_agent.state.versioning import StateStore
 
 
-def make_planner_node(*, state_store: StateStore, planner: Planner, context_builder: PlannerContextBuilder | None = None):
+def make_planner_node(*, state_store: StateStore, planner: Planner, context_builder: PlannerContextBuilder | None = None, runtime=None):
     builder = context_builder or PlannerContextBuilder()
 
     def planner_node(graph_state: GraphState | dict) -> dict:
@@ -19,6 +19,8 @@ def make_planner_node(*, state_store: StateStore, planner: Planner, context_buil
         context = builder.build(state)
         decision = planner.step(context, state)
         validate_planner_decision(state, decision)
+        if runtime is not None and runtime.planner_commit is not None:
+            state = runtime.planner_commit(runtime, state, decision)
         metadata = dict(envelope.metadata)
         metadata["planner_context_size"] = len(context.model_dump_json())
         metadata["planner_decisions"] = int(metadata.get("planner_decisions", 0)) + 1
@@ -32,4 +34,3 @@ def make_planner_node(*, state_store: StateStore, planner: Planner, context_buil
         ).model_dump(mode="python")
 
     return planner_node
-

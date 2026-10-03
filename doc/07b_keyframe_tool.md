@@ -5,6 +5,11 @@
 
 # 7B. Keyframe Tool
 
+> Phase 7 scope revision: retain `KeyframeSpec`, pose handles, hard masks and
+> verification specifications through the generation pipeline. A valid input
+> interface does not guarantee exact keyframe forcing by Frozen GEM. Forcing
+> is deferred to Guided Generation; errors are retained as research metrics.
+
 Keyframe Tool 的职责是：
 
 > **把 Planner 已经确认的 Whole-Body State Requirement，转换成一个可执行、可验证、可与 Constraint Composer 合并的 KeyframeSpec。**
@@ -1907,4 +1912,3 @@ Generator 与 Verifier 使用同一个 KeyframeSpec。
 
 V1 不需要重新训练 GEM。
 ```
-

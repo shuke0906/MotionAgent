@@ -1,0 +1,17 @@
+phase11:
+  k: 1
+  planner_steps: 16
+  state_transitions: 60
+  generation_rounds: 4
+  repair_rounds: 3
+  retrieval_calls: 4
+  threshold_profile: phase11_cpu_control_plane_v1
+  real_mllm_frequency: true
+  mllm_max_calls: 36
+  mllm_image_detail: high
+  mllm_contact_sheet: true
+  mllm_timeout_s: 60
+  gem_backend: cpu_fixture
+  tmr_enabled: false
+  motioncritic_enabled: false
+  physical_metrics_enabled: false

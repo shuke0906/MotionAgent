@@ -4,6 +4,71 @@
 
 # 5. Motion Compiler
 
+## Phase 7 Composite Timeline Extension
+
+`MotionSegment` retains the existing action/body-parts/repetition/direction
+fields and adds `angle_deg`, `parent_segment_id`, `continuation_of`,
+`simultaneous_with`, `explicit_duration_s` and resolved `duration_s`.
+Relationships refer to segment IDs. Concurrent windows can overlap their
+parent; sequential stages still cover the complete timeline without gaps.
+
+For the required six-second, 30 fps prompt, the compiler emits walk `[0,120)`,
+right-hand wave (repeat 2) `[60,120)`, left turn (90 degrees) `[120,150)` and
+sit_down `[150,180)`. The explicit initial two seconds set the continuation
+start; unspecified wave duration uses the existing action weight, and
+unspecified terminal transitions share the remaining time equally. This is
+a deterministic timing convention, not a claim that the prompt fixes every
+duration. Simple existing single-segment simultaneous syntax stays supported.
+
+`GenerationRequest.motion_spec` and persisted candidate request metadata
+retain these relationships. GEM receives compound captions for concurrent
+intent, partitioned only at the compiler's existing segment boundaries.
+Camera/image placeholders have exactly `total_frames` rows. DSL overlap is
+preserved; text-window count need not equal semantic-segment count.
+
+### Deterministic Semantic Compilation Compatibility Update
+
+The current executable backend is the bounded deterministic parser in
+`semantic_parser.py`; the LLM-based parser described below remains the broader
+design, not an implementation claim. A shared lexical table normalizes
+imperative, third-person, gerund and past-tense forms of supported actions.
+Conjunction splitting recognizes action verbs without splitting coordinated
+body parts such as `left and right hands`.
+
+Initial compilation records `source_text`, `source_start`, and `source_end`
+on each parsed segment. These offsets reference the unchanged original input.
+Temporal Resolver uses that clause, not the first occurrence of an action in
+the whole prompt. Counts, continuous modes and alternation therefore remain
+clause-scoped. Explicit concurrent child segments receive a `simultaneous`
+temporal relation to their parent. Existing inline `secondary_actions` syntax
+remains compatible.
+When both primary and secondary actions carry independent counts, or a
+concurrent clause has an explicit continuous mode, the existing child-segment
+representation is used so temporal attributes cannot migrate between actions.
+
+`validate_request_coverage` rejects supported source actions lost during initial
+compilation and checks recorded count, body-part and direct turn-direction
+provenance. This is bounded lexical coverage, not a universal natural-language
+understanding guarantee. Targeted revision retains existing segment provenance;
+its full-plan offsets do not become offsets into the revision instruction.
+For legacy artifacts without source spans, existing structured or legacy
+repetition counts remain authoritative rather than rebinding to the first
+matching verb in the original request.
+Caption validation checks all active actions using shared verb morphology.
+
+`gem_text_compiler.py` partitions at existing start/end frames and composes one
+caption from all active segments in each interval. It does not invent timings,
+expand repetitions, apply body-part masks, add keyframes, or modify GEM.
+`GEMTextCondition.segment_bounds` maps semantic IDs to original frame ranges.
+Generation preflight and segment-range lookup use that map, with caption-index
+fallback only for legacy conditions lacking it. GEM's native text API still
+receives captions and normalized windows, not a new conditioning tensor.
+
+Reproducibility validation must record prompt, actual sampler seed, checkpoint
+and source hashes, software/GPU settings, and fresh-inference comparisons.
+Cache hits are not evidence of deterministic inference. Compound conditioning
+is an input representation change, not proof of better motion or exact cycles.
+
 本节定义 Motion Compiler 的**实现规范**。
 
 Motion Compiler 的职责是：
@@ -169,22 +234,25 @@ User Request / Existing Plan
 1. Semantic Parsing
           │
           ▼
-2. Human Motion DSL Normalization
+2. Temporal Resolution
           │
           ▼
-3. Timeline Compilation
+3. Human Motion DSL Normalization
           │
           ▼
-4. Control Intent Detection
+4. Timeline Compilation
           │
           ▼
-5. GEM Caption Optimization
+5. Control Intent Detection
           │
           ▼
-6. Validation
+6. GEM Caption Optimization
           │
           ▼
-7. GEM Text Compilation
+7. Validation
+          │
+          ▼
+8. GEM Text Compilation
           │
           ▼
 CompilerResult
@@ -201,6 +269,60 @@ Rules / Validator
 ```
 
 不采用纯规则，也不完全依赖 LLM。
+
+### 5.3.1 Temporal Resolver
+
+Temporal Resolver 位于 Semantic Parser 之后，负责把自然语言中的时间模式转成结构化语义。它只修改 Motion DSL，不调用 GEM、不运行 diffusion、不验证最终动作是否真的满足重复次数。
+
+支持的第一版语义：
+
+```json
+{
+  "action": "wave",
+  "temporal_constraint": {
+    "type": "repetition",
+    "mode": "cycle",
+    "count": 3
+  }
+}
+```
+
+连续动作：
+
+```json
+{
+  "action": "walk",
+  "temporal_mode": "continuous"
+}
+```
+
+交替关系：
+
+```json
+{
+  "action": "wave",
+  "temporal_relation": {
+    "type": "alternating",
+    "marker": "alternately"
+  }
+}
+```
+
+第一版确定性覆盖：
+
+```text
+once
+twice
+three times
+four times
+repeatedly
+continuously
+keep walking / keep waving
+alternately / alternating
+```
+
+旧字段 `repetition` 可作为兼容摘要保留，但新的 source of truth 是
+`temporal_constraint`。
 
 ---
 
@@ -364,6 +486,9 @@ class MotionSegment(BaseModel):
     style: list[str]
 
     repetition: int | None
+    temporal_constraint: dict | None
+    temporal_mode: str | None
+    temporal_relation: dict | None
     orientation: str | None
     transition: str | None
 
@@ -381,6 +506,28 @@ class MotionSegment(BaseModel):
 
     confidence: float
 ```
+
+重复动作不得只写成：
+
+```json
+{
+  "repeat": 3
+}
+```
+
+应归一化为：
+
+```json
+{
+  "temporal_constraint": {
+    "type": "repetition",
+    "mode": "cycle",
+    "count": 3
+  }
+}
+```
+
+`repetition` 字段只作为 legacy summary / verifier compatibility 使用。下游需要区分离散重复、连续执行、交替关系时必须读取 `temporal_constraint`、`temporal_mode` 和 `temporal_relation`。
 
 ---
 
@@ -1456,6 +1603,7 @@ validate_motion_semantics()
 validate_caption_length()
 validate_segment_coverage()
 validate_control_intents()
+validate_temporal_constraints()
 ```
 
 ---
@@ -1469,6 +1617,8 @@ enum 合法
 required field 存在
 segment_id 唯一
 repetition > 0
+temporal_constraint.count > 0 when present
+temporal_constraint uses repetition/cycle for discrete action cycles
 duration_weight > 0
 ```
 
@@ -1496,6 +1646,7 @@ Caption 未丢失主要 Action
 Caption 未改变 Body Part
 Caption 未改变 Direction
 Caption 未改变 Repetition
+Caption 未丢失 structured temporal_constraint / temporal_mode
 Caption 未添加新 Motion
 ```
 
@@ -1543,6 +1694,8 @@ compiler/
 │
 ├── semantic_parser.py
 │
+├── temporal_resolver.py
+│
 ├── motion_dsl.py
 │
 ├── timeline_compiler.py
@@ -1567,6 +1720,9 @@ schemas.py
 
 semantic_parser.py
 → Natural Language → Structured Semantics
+
+temporal_resolver.py
+→ repetition / continuous / alternation semantics → structured temporal fields
 
 motion_dsl.py
 → Normalize / Canonicalize
@@ -1606,6 +1762,11 @@ def compile_motion(
         target_segments=target_segments,
         focus=focus,
         diagnosis=state.diagnosis,
+    )
+
+    semantic_plan = temporal_resolver.resolve(
+        request=state.user_request,
+        semantic_plan=semantic_plan,
     )
 
     dsl_plan = motion_dsl.normalize(

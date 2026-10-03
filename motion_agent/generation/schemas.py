@@ -6,7 +6,9 @@ from typing import Any, Literal
 
 from pydantic import Field, model_validator
 
-from motion_agent.compiler.schemas import GEMTextCondition
+from motion_agent.compiler.schemas import GEMTextCondition, MotionSpecification
+from motion_agent.constraints.schemas import VerificationSpec
+from motion_agent.keyframes.schemas import KeyframeSpec
 from motion_agent.state.schemas import StrictModel
 
 
@@ -18,13 +20,28 @@ class GenerationOutputPolicy(StrictModel):
 
 
 class GenerationConditionBundle(StrictModel):
+    """Information supplied to GEM; satisfaction requires future guided sampling."""
+
     text_condition_id: str
     hard_motion_condition_handle: str | None = None
     reward_specs: list[dict[str, Any]] = Field(default_factory=list)
+    verification_specs: list[VerificationSpec] = Field(default_factory=list)
+    keyframe_specs: list[KeyframeSpec] = Field(default_factory=list)
     active_constraint_ids: list[str] = Field(default_factory=list)
     active_keyframe_ids: list[str] = Field(default_factory=list)
     active_reference_ids: list[str] = Field(default_factory=list)
     condition_fingerprint: str
+
+
+CandidateFailureType = Literal[
+    "oom",
+    "timeout",
+    "invalid_output",
+    "missing_artifact",
+    "worker_unavailable",
+    "feature_unavailable",
+    "runtime_error",
+]
 
 
 class GenerationRequest(StrictModel):
@@ -35,6 +52,7 @@ class GenerationRequest(StrictModel):
     fps: int = 30
     total_frames: int
     text_condition: GEMTextCondition
+    motion_spec: MotionSpecification | None = None
     condition_bundle: GenerationConditionBundle
     previous_candidate_id: str | None = None
     num_candidates: int = 1
@@ -53,6 +71,9 @@ class GenerationRequest(StrictModel):
             raise ValueError("len(seeds) must equal num_candidates")
         if self.text_condition.total_frames != self.total_frames:
             raise ValueError("text_condition.total_frames must match request.total_frames")
+        if self.motion_spec is not None:
+            if self.motion_spec.total_frames != self.total_frames or self.motion_spec.fps != self.fps:
+                raise ValueError("motion_spec timeline must match request")
         return self
 
 
@@ -93,6 +114,7 @@ class CandidateMetadata(StrictModel):
     frame_count: int
     motion_dim: int
     technical_valid: bool
+    generation_request: GenerationRequest | None = None
 
 
 class MotionCandidate(StrictModel):
@@ -113,8 +135,10 @@ class CandidateStoreRecord(StrictModel):
 
 class CandidateFailure(StrictModel):
     seed: int
-    error_type: str
+    error_type: CandidateFailureType
     message: str
+    retryable: bool = False
+    cleanup_performed: bool = False
 
 
 class GenerationResult(StrictModel):
@@ -125,3 +149,28 @@ class GenerationResult(StrictModel):
     condition_fingerprint: str
     runtime_ms: float
     preflight: GenerationPreflightReport
+    cache_hits: int = 0
+    inference_calls: int = 0
+
+
+class GPUGenerationJob(StrictModel):
+    job_id: str
+    request: GenerationRequest
+    checkpoint_version: str
+    queued_at: float | None = None
+
+
+class WorkerHealth(StrictModel):
+    worker_id: str
+    available: bool
+    model_loaded: bool = False
+    current_job_id: str | None = None
+    queue_depth: int = 0
+    last_success_at: float | None = None
+    last_failure_at: float | None = None
+    jobs_completed: int = 0
+    jobs_failed: int = 0
+    device: str | None = None
+    gpu_name: str | None = None
+    peak_vram_mb: float | None = None
+    last_latency_ms: float | None = None

@@ -60,9 +60,47 @@ class Phase3MotionCompilerTests(unittest.TestCase):
         self.assertEqual(first.action, "wave")
         self.assertIn("right_hand", first.body_parts)
         self.assertEqual(first.repetition, 3)
+        self.assertEqual(first.temporal_constraint.type, "repetition")
+        self.assertEqual(first.temporal_constraint.mode, "cycle")
+        self.assertEqual(first.temporal_constraint.count, 3)
         self.assertEqual(second.action, "sit_down")
         self.assertLess(first.end_frame, second.end_frame)
         self.assertEqual(first.end_frame, second.start_frame)
+
+    def test_temporal_resolver_structures_wave_three_times(self):
+        result = compile_prompt("wave your right hand three times")
+        segment = result.motion_spec.segments[0]
+        self.assertEqual(segment.action, "wave")
+        self.assertIn("right_hand", segment.body_parts)
+        self.assertEqual(segment.temporal_constraint.model_dump(mode="json"), {
+            "type": "repetition",
+            "mode": "cycle",
+            "count": 3,
+            "quantifier": None,
+            "source_text": "three times",
+        })
+
+    def test_temporal_resolver_marks_keep_walking_continuous(self):
+        result = compile_prompt("keep walking forward")
+        segment = result.motion_spec.segments[0]
+        self.assertEqual(segment.action, "walk")
+        self.assertEqual(segment.direction, "forward")
+        self.assertEqual(segment.temporal_mode, "continuous")
+
+    def test_temporal_resolver_supports_twice(self):
+        result = compile_prompt("jump twice")
+        segment = result.motion_spec.segments[0]
+        self.assertEqual(segment.action, "jump")
+        self.assertEqual(segment.temporal_constraint.count, 2)
+
+    def test_temporal_relation_for_walk_while_waving_three_times(self):
+        result = compile_prompt("Walk forward while waving your right hand three times.")
+        segment = result.motion_spec.segments[0]
+        self.assertEqual(segment.action, "walk")
+        self.assertIn("right_hand", segment.body_parts)
+        self.assertEqual(segment.temporal_relation.type, "simultaneous")
+        self.assertEqual(segment.temporal_relation.marker, "while")
+        self.assertEqual(segment.temporal_constraint.count, 3)
 
     def test_timeline_invariants(self):
         result = compile_prompt("walk forward then wave the right hand three times then sit down")

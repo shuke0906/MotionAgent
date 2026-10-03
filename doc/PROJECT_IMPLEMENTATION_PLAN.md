@@ -1564,6 +1564,13 @@ explicit turn 更新 anchor
 
 # 10. Phase 7 — Complete Generation Tool
 
+> Revised Phase 7 gate: complete generation infrastructure, composite semantic
+> compilation and condition interfaces. Hard-condition satisfaction, exact
+> keyframe forcing and true diffusion-time inpainting are DEFERRED to Guided
+> Generation and do not block this milestone. Retain their measured errors.
+> The original acceptance targets below describe future satisfaction goals
+> where they exceed this revised scope. See module 08's Phase 7 scope note.
+
 ## 目标
 
 把 Phase 4 的最小 Generator 升级成正式 08：
@@ -3217,3 +3224,23 @@ tests/
 而是：
 
 > **每个模块都有明确可验证的正确性标准，并且这些标准组合后能够证明整个 MotionAgent 闭环可靠工作。**
+
+## Phase 9B Integration Status (2026-10-02)
+
+Phase 9 Core Engineering Gate: PASS (historical status preserved).
+Phase 8: BYPASSED_FOR_K1_MODE; current execution remains K=1.
+
+| Gate | Status |
+|---|---|
+| Phase 9B TMR | PASS: actual GEM candidate FK/Guo conversion and real official text-motion inference executed |
+| Phase 9B MotionCritic | IMPLEMENTED_BLOCKED: real CPU inference executed; exact SMPL hand retargeting missing |
+| Phase 9B MLLM | PASS: user-authorized real OpenAI candidate-frame API execution and typed structured findings |
+| Phase 9 Full Learned-Verifier Gate | PARTIAL |
+
+The user explicitly authorized continuation and real candidate-frame uploads.
+Existing credentials have now produced real structured OpenAI responses. The local
+SMPL-X model was recovered from the user's Downloads folder, enabling real TMR
+and deterministic joint-based physical checks. Exact full-SMPL MotionCritic
+retargeting remains blocked; neutral terminal-hand scores are exploratory only.
+Detailed evidence and remaining dependencies: `reports/phase_9b_real_verifier_integration.md`
+and `outputs/phase9b_real_verifiers/gate.json`. Phase 10 has not begun.

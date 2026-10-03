@@ -4,7 +4,9 @@ from __future__ import annotations
 
 from motion_agent.common.fingerprints import condition_fingerprint
 from motion_agent.common.ids import new_id
-from motion_agent.compiler.schemas import CompilerResult, GEMTextCondition
+from motion_agent.compiler.schemas import CompilerResult, GEMTextCondition, MotionSpecification
+from motion_agent.constraints.schemas import ConstraintBundle
+from motion_agent.generation.condition_assembler import bundle_from_constraint_bundle
 from motion_agent.generation.schemas import GenerationConditionBundle, GenerationRequest
 from motion_agent.generation.seed_manager import derive_seeds
 from motion_agent.state.schemas import MotionAgentState
@@ -41,17 +43,43 @@ def build_generation_request(
     generation_id: str | None = None,
     num_candidates: int = 1,
     seed: int | None = None,
+    seeds: list[int] | None = None,
+    strategy: str = "normal",
+    scope: str = "full",
+    target_segments: list[int] | None = None,
+    previous_candidate_id: str | None = None,
+    condition_bundle: GenerationConditionBundle | ConstraintBundle | None = None,
+    motion_spec: MotionSpecification | None = None,
 ) -> GenerationRequest:
+    if isinstance(condition_bundle, ConstraintBundle):
+        bundle = bundle_from_constraint_bundle(
+            text_condition_id=text_condition_id,
+            text_condition_payload=condition.model_dump(mode="json"),
+            constraint_bundle=condition_bundle,
+        )
+    elif isinstance(condition_bundle, GenerationConditionBundle):
+        bundle = condition_bundle
+    else:
+        bundle = bundle_for_text_condition(condition, text_condition_id=text_condition_id)
+    postprocess_policy = (
+        "constraint_safe"
+        if scope == "segment" or bundle.hard_motion_condition_handle or bundle.active_keyframe_ids
+        else "gem_default"
+    )
     return GenerationRequest(
         generation_id=generation_id or new_id("generation"),
-        strategy="normal",
-        scope="full",
+        strategy=strategy,  # type: ignore[arg-type]
+        scope=scope,  # type: ignore[arg-type]
+        target_segments=target_segments,
         fps=fps,
         total_frames=condition.total_frames,
         text_condition=condition,
-        condition_bundle=bundle_for_text_condition(condition, text_condition_id=text_condition_id),
+        motion_spec=motion_spec,
+        condition_bundle=bundle,
+        previous_candidate_id=previous_candidate_id,
         num_candidates=num_candidates,
-        seeds=derive_seeds(seed, num_candidates),
+        seeds=seeds or derive_seeds(seed, num_candidates),
+        postprocess_policy=postprocess_policy,
     )
 
 
@@ -64,6 +92,7 @@ def build_generation_request_from_compiler_result(
 ) -> GenerationRequest:
     return build_generation_request(
         condition=result.gem_text_condition,
+        motion_spec=result.motion_spec,
         fps=result.motion_spec.fps,
         generation_id=generation_id,
         num_candidates=num_candidates,
@@ -77,6 +106,10 @@ def build_generation_request_from_state(
     *,
     num_candidates: int = 1,
     seed: int | None = None,
+    strategy: str = "normal",
+    scope: str = "full",
+    target_segments: list[int] | None = None,
+    previous_candidate_id: str | None = None,
 ) -> GenerationRequest:
     bundle = GenerationConditionBundle(
         text_condition_id=state.plan.gem_text_condition_id or "textcond_missing",
@@ -88,12 +121,17 @@ def build_generation_request_from_state(
     )
     return GenerationRequest(
         generation_id=new_id("generation"),
-        strategy="normal",
-        scope="full",
+        strategy=strategy,  # type: ignore[arg-type]
+        scope=scope,  # type: ignore[arg-type]
+        target_segments=target_segments,
         fps=state.task.fps,
         total_frames=state.task.total_frames,
         text_condition=condition,
         condition_bundle=bundle,
+        previous_candidate_id=previous_candidate_id,
         num_candidates=num_candidates,
         seeds=derive_seeds(seed, num_candidates),
+        postprocess_policy="constraint_safe"
+        if scope == "segment" or bundle.hard_motion_condition_handle or bundle.active_keyframe_ids
+        else "gem_default",
     )

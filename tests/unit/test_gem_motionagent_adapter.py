@@ -6,7 +6,8 @@ import torch
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 GENMO_ROOT = REPO_ROOT / "vendor" / "GENMO"
-sys.path.insert(0, str(GENMO_ROOT))
+ADAPTER_ROOT = GENMO_ROOT if (GENMO_ROOT / "gem/motionagent.py").is_file() else REPO_ROOT / "integrations/GENMO"
+sys.path.insert(0, str(ADAPTER_ROOT))
 
 from gem.motionagent import (  # noqa: E402
     MotionAgentCameraContext,
@@ -81,4 +82,3 @@ class MotionAgentGEMAdapterTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
-

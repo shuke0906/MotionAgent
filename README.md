@@ -1,178 +1,187 @@
 # MotionAgent
 
-MotionAgent is an agentic control layer for structured human-motion generation built around a frozen NVIDIA GEM/GENMO generator. It compiles a user motion request into explicit timeline-aware conditioning, sends that condition to Frozen GEM, and stores reproducible motion candidates without finetuning GEM.
+Agentic planning, verification, and bounded repair around a frozen text-to-motion generator.
 
-## Demo
+MotionAgent compiles motion requests into structured intent, routes tools, evaluates generated motion, and returns verification-gated `ACCEPT` or explicit `STOP_FAILED`. NVIDIA GEM is the frozen generation tool, not the agent. The Motion Planner owns global control.
 
-![MotionAgent Demo](docs/assets/demo/motionagent_demo.gif)
+[Architecture](#architecture) | [Demo](#demo-verification-guided-motion-repair) | [Quick Setup](#quick-setup) | [Testing](#testing)
 
-Left: direct Frozen GEM baseline. Right: MotionAgent structured multi-stage conditioning.
+## Overview
 
-This is a qualitative side-by-side demo for one controlled prompt and seed, not a formal superiority benchmark.
+Direct GEM produces motion from raw text. MotionAgent adds explicit temporal semantics, state, evidence, diagnosis, and legal repair proposals. Diagnosis proposes repairs; the Planner selects exactly one next action. Every repaired candidate must be verified again.
 
-## Core Architecture
-
-```text
-User
-  |
-  v
-LangGraph Planner
-  |
-  v
-Motion Compiler
-  |
-  v
-MotionSpecification + GEMTextCondition
-  |
-  v
-Frozen GEM
-  |
-  v
-MotionCandidate
-  |
-  v
-CandidateStore
-```
-
-Planned later modules are kept separate from the implemented Phase 0-4 path:
-
-```text
-Retrieval
-Constraint / Keyframe
-Candidate Tournament
-Multi-Verifier
-Diagnosis / Repair
-```
-
-Phase 5 has not started in this repository. Cross-segment continuity appears in planning documentation, but it should be treated as design intent unless a corresponding code patch is present in the implementation.
-
-## Implementation Status
-
-| Phase | Module | Status |
+| | Baseline GEM | MotionAgent |
 |---|---|---|
-| 0 | Frozen GEM baseline | Implemented |
-| 1 | State / persistence | Implemented |
-| 2 | LangGraph planner harness | Implemented |
-| 3 | Motion Compiler | Implemented |
-| 4 | Compiler to Frozen GEM generation | Implemented |
-| 5+ | Retrieval / constraints / evaluation / repair | Planned |
+| Input | Raw text | Raw text |
+| Structured planning | No | Yes |
+| Temporal reasoning | Generator only | Explicit structured semantics |
+| Verification | No | Multi-Verifier |
+| Failure diagnosis | No | Yes |
+| Targeted repair | No | Planner-selected proposals |
+| Final guard | No | Verification-gated ACCEPT |
 
-## Technology Stack
+This is an architectural comparison, not a benchmark superiority claim.
 
-- Python: core implementation and validation scripts.
-- PyTorch: tensor data structures, GEM payload assembly, and model runtime integration.
-- LangGraph: stateful planner orchestration, graph routing, checkpoint, and resume.
-- Pydantic: typed schemas for state, compiler outputs, generation requests, and candidates.
-- SQLite / LangGraph SqliteSaver: local checkpoint persistence for graph runs.
-- NVIDIA GEM / GENMO: frozen base motion generator used by MotionAgent through adapter code.
-- SMPL / SMPL-X runtime: body representation and rendering/runtime dependency for real GEM validation.
-- CUDA: required for real GEM generation.
-- RunPod: used for the completed GPU validation runs; no RunPod connection details are stored here.
+## Architecture
 
-## GEM / GENMO Integration
+```mermaid
+flowchart TD
+    U[User Prompt] --> P[Motion Planner]
+    P -->|COMPILE_MOTION| C[Motion Compiler and Temporal Resolver]
+    P -->|RETRIEVE_REFERENCE| R[Retrieval]
+    P -->|BUILD_CONSTRAINT| K[Constraint Compiler]
+    P -->|BUILD_KEYFRAME| KF[Keyframe Builder]
+    C --> P
+    R --> P
+    K --> P
+    KF --> P
+    P -->|GENERATE| G[Frozen GEM]
+    G --> S[K=1 SingleCandidateSelector]
+    S --> V[Multi-Verifier]
+    V -->|Pass| P
+    V -->|Fail or incomplete| D[Diagnosis and Repair Proposals]
+    D --> P
+    P -->|ACCEPT| A[Final Motion]
+    P -->|STOP_FAILED| F[Explicit Stop]
+```
 
-This repository does not vendor the full upstream GENMO project. It keeps MotionAgent-specific integration files as a small patch set:
+Current mode is **K=1**. Phase 8 is `BYPASSED_FOR_K1_MODE`; no active Tournament is claimed.
 
-- `motion_agent/generation/gem_adapter.py`
-- `integrations/GENMO/gem/motionagent.py`
-- `integrations/GENMO/scripts/demo/demo_motionagent_text.py`
+### How It Works
 
-Use the official upstream [NVIDIA GENMO repository](https://github.com/NVlabs/GENMO) for the complete GEM source, preserve its license notices, and copy the files under `integrations/GENMO/` into the matching upstream paths when reproducing the MotionAgent pure-text adapter. GEM checkpoints and SMPL-X body-model assets are not distributed in this repository.
+| Component | Responsibility |
+|---|---|
+| Motion Planner | Selects one structured next action, subject to deterministic guards |
+| Motion Compiler | Converts natural language into MotionSpecification |
+| Temporal Resolver | Resolves event order, simultaneity, and repetition |
+| Retrieval | Supplies reference grounding when its data/index are installed |
+| Constraint Compiler | Builds geometric and motion constraints |
+| Keyframe Builder | Builds whole-body target poses |
+| Frozen GEM | Generates SMPL motion without fine-tuning |
+| K=1 Selector | Passes the single candidate to verification |
+| Multi-Verifier | Applies task-aware technical, semantic, event, and physical checks |
+| Diagnosis / Repair Planner | Explains failures and produces legal RepairProposal objects |
+| State / Artifact Store | Tracks typed state, evidence, lineage, and heavy-artifact handles |
 
-## Setup
+The fixed Planner action space is `COMPILE_MOTION`, `RETRIEVE_REFERENCE`, `BUILD_CONSTRAINT`, `BUILD_KEYFRAME`, `GENERATE`, `ACCEPT`, and `STOP_FAILED`. A `PlannerDecision` passes deterministic guards; it is not arbitrary tool execution.
 
-Create an environment and install the MotionAgent test/runtime dependencies:
+For "Wave the right hand three times," the compiler preserves `expected_count=3`. Required failure or incomplete verification follows `VerificationReport -> Diagnosis -> RepairProposal -> Planner -> generation -> verification`. Failed requirements cannot authorize ACCEPT. Exhausted budgets terminate with STOP_FAILED; repair is not automatically successful.
+
+## Design Principles
+
+- **LLM semantic reasoning:** request interpretation, structured compilation, high-level planning, and optional selective diagnosis. The published demo used rule-first diagnosis, not LLM diagnosis.
+- **Deterministic harness:** schemas, guards, budgets, transitions, numerical constraints, physical checks, cache fingerprints, and artifact lineage.
+- **Frozen backbone:** control is added around GEM rather than through GEM fine-tuning.
+- **Structured state:** task intent and Planner control are separated from execution artifacts and verification/diagnosis evidence. Bounded context comes from canonical state, not chat history as execution truth.
+
+## Demo: Verification-Guided Motion Repair
+
+> A person walks forward while waving their right hand three times, then turns left and sits down.
+
+The actual Phase 11 run used 14 seconds, 420 frames, 30 FPS, K=1, and at most one repair. The real compiler retained walking forward, right-hand waving with count 3, simultaneous walk/wave, a left turn, and sitting. All event ranges were inferred internally.
+
+Planner actions: **COMPILE_MOTION -> GENERATE -> GENERATE -> STOP_FAILED**.
+
+| Stage | Actual result |
+|---|---|
+| Baseline | One raw-text GEM generation; no Planner or verifier |
+| Agent Round 0 | `cand_62029139ee35ecf7`; incomplete report, overall_pass=false |
+| Diagnosis and repair | Rule-first diagnosis; Planner chose REGENERATE, normal/segment, targeting all four segments |
+| Agent Round 1 | `cand_d442a42f1adee871`; incomplete report, overall_pass=false |
+| Final | **STOP_FAILED / BUDGET_EXHAUSTED** |
+| Minimal runtime gate | **PASS**: real bounded control loop, not successful prompt execution |
+
+TMR ran twice but lacks a calibrated threshold. Real MLLM evidence could not reliably count waves: **expected 3, observed unknown** in both rounds. Strict MotionCritic did not run because the representation lacks its terminal hand rotations. Kinematic naturalness improved, but other checks still failed and ground penetration regressed. Two original visual-report issues were corrected after this run; the published results preserve the original evidence.
+
+![Actual before and after repair preview](assets/demo/repair_preview.gif)
+
+[Baseline](assets/demo/baseline.mp4) | [Agent Round 0](assets/demo/agent_round0.mp4) | [Agent Final](assets/demo/agent_final.mp4) | [Before vs After Repair](assets/demo/repair_comparison.mp4) | [Full Comparison](assets/demo/comparison.mp4)
+
+All videos use synchronized playback, the same fixed camera, background, FPS, and FK22 skeleton renderer. Candidate body shapes are preserved; generated motion was not manually changed. Use MP4 for detail beyond the reduced-resolution GIF.
+
+![Actual Phase 11 execution trace](assets/demo/pipeline_trace.png)
+
+Actual Phase 11 execution trace, generated from EventLog. [HTML](assets/demo/pipeline_trace.html) may display as source on GitHub. [Detailed demo](docs/phase11_demo.md), [sanitized trace](assets/demo/trace.json), and [run summary](assets/demo/demo_summary.json) contain the evidence and limitations.
+
+## Quick Setup
+
+The real GPU demo used Linux, Python 3.12.3, PyTorch 2.8.0+cu128, CUDA 12.8, and A100 80 GB. CPU tests do not need GEM assets. This is a tested configuration, not a guarantee for every upstream dependency combination.
 
 ```bash
+git clone https://github.com/shuke0906/MotionAgent.git
+cd MotionAgent
 python -m venv .venv
 source .venv/bin/activate
 python -m pip install -r requirements.txt
+python -m pip install -r requirements-phase11.txt
+cp .env.example .env
 ```
 
-On Windows PowerShell:
+Windows activation: `.venv\Scripts\Activate.ps1`. Choose a CUDA PyTorch build before installing requirements; see [GPU reproduction details](docs/phase11_demo.md#runtime-setup). Populate `OPENAI_API_KEY` and `OPENAI_MODEL` in private `.env`. For visual verification configure `MLLM_API_KEY` and a vision-capable `MLLM_MODEL`; these are independent settings. [.env.example](.env.example) has empty values only. Never commit credentials.
 
-```powershell
-python -m venv .venv
-.\.venv\Scripts\Activate.ps1
-python -m pip install -r requirements.txt
+Install external GENMO and copy the integration patch files:
+
+```bash
+git clone https://github.com/NVlabs/GENMO.git vendor/GENMO
+git -C vendor/GENMO checkout 16bebf402d8893184249ee206d957b8248cd8310
+git -C vendor/GENMO apply ../../integrations/GENMO/compatibility.patch
+cp -r integrations/GENMO/gem/. vendor/GENMO/gem/
+cp -r integrations/GENMO/scripts/. vendor/GENMO/scripts/
+python vendor/GENMO/scripts/download_gvhmr_support.py
+python scripts/download_phase11_gem.py
 ```
 
-For real GEM generation, install the full upstream GENMO project under `vendor/GENMO` or otherwise make it importable, then apply/keep the MotionAgent adapter files listed above. Obtain `gem_smpl.ckpt` from the official GEM/GENMO distribution path, and obtain SMPL-X assets such as `SMPLX_NEUTRAL.npz` from the official restricted source. Do not commit these assets.
-
-Expected local asset locations may follow the upstream GENMO conventions:
+Obtain licensed SMPL-X separately. Expected asset paths:
 
 ```text
 vendor/GENMO/inputs/pretrained/gem_smpl.ckpt
 vendor/GENMO/inputs/checkpoints/body_models/smplx/SMPLX_NEUTRAL.npz
 ```
 
-CPU-only development can run the state, planner, compiler, schema, and adapter contract tests. Real generation and rendering require a CUDA GPU plus the GEM checkpoint and SMPL-X assets.
-
-## Project Structure
-
-```text
-motion_agent/
-├── agent/        # planner policy, guards, budgets, action helpers
-├── app/          # orchestrator and graph runner entry points
-├── common/       # IDs, fingerprints, shared errors
-├── compiler/     # natural-language motion parsing and GEM text conditioning
-├── generation/   # GenerationRequest, GEM adapter, candidate persistence
-├── graph/        # LangGraph topology, state, routing, nodes, checkpointing
-└── state/        # canonical state, reducer, event log, artifact store
-
-tests/            # unit, integration, and contract tests
-scripts/          # phase validation and rendering scripts
-doc/              # implementation guide and module design notes
-docs/assets/demo/ # lightweight README demo GIF
-integrations/     # MotionAgent patch files for upstream GENMO
-```
-
-## Verified Results
-
-Use only the validated facts below as current project claims:
-
-- Real Frozen GEM CUDA generation: PASS.
-- Compiler to GEM pipeline: PASS.
-- Multi-text conditioning: PASS.
-- Same-seed reproducibility: PASS.
-- CandidateStore persistence and traceability: PASS.
-- Phase 4 controlled comparison prompt: `walk forward, wave the right hand, then sit down`.
-- Current local regression result: `50 passed, 24 subtests passed`.
-
-No scientific SOTA claim is made here.
-
-## Research Acknowledgements
-
-Direct dependency / base model:
-
-- [NVIDIA GEM / GENMO](https://github.com/NVlabs/GENMO): frozen human-motion generator used by MotionAgent.
-
-Design inspirations and planned module references:
-
-- [LAMP](https://cyberiada.github.io/LAMP/): inspired structured motion program / DSL design.
-- [RAPO](https://arxiv.org/abs/2504.11739): inspired prompt and caption refinement ideas.
-- [TMR](https://arxiv.org/abs/2305.00976): planned text-motion retrieval and semantic evidence.
-- [HumanML3D](https://github.com/EricGuo5513/HumanML3D): planned retrieval / motion-language corpus reference.
-- [Retrieval-Guided DNO](https://hanchaoliu.github.io/RetrievalGuidedDNO/): inspired future training-free guided-generation ideas.
-- [ReAlign](https://wengwanjiang.github.io/ReAlign-page/): inspired reward-guided generation concepts.
-- [VISTA](https://www.emergentmind.com/papers/2510.15831): planned pairwise candidate tournament structure.
-- [AToM](https://atom-motion.github.io/): planned event / temporal evaluation structure.
-- [MotionCritic](https://motioncritic.github.io/): planned motion naturalness evidence.
-- [GENMAC](https://arxiv.org/abs/2412.04440): inspired diagnosis and repair structure.
-- [NEWTON](https://newton026.github.io/newton/): inspired planner/tool orchestration and verifier feedback loops.
-
-These references are design inspirations unless explicitly represented by implemented code in this repository.
-
-## Tests
-
-Run the CPU-capable regression suite:
+Sources: [official NVIDIA GEM-X](https://huggingface.co/nvidia/GEM-X), [official SMPL-X registration/download](https://smpl-x.is.tue.mpg.de/). Assets are **not redistributed**. Install TMR/MotionCritic separately using upstream instructions and [configured paths](configs/learned_verifiers.yaml). Install `ffmpeg` on PATH. Full GPU dependencies include GENMO's text encoder assets; consult the detailed setup before running.
 
 ```bash
-python -m pytest tests -v
+python scripts/smoke_llm_api.py --use-dotenv
+python scripts/probe_phase11_backends.py --visual
+python scripts/run_phase11_minimal.py
 ```
 
-No expensive GPU rerun is required for ordinary publishing checks.
+The last command runs one GEM smoke, one baseline, then the bounded Agent with at most one repair. It is **not** the full eight-scenario benchmark. Output: ignored `outputs/phase11_real_e2e/`. Existing smoke/baseline artifacts may be reused; use a fresh output directory for a new matched comparison. API and GPU execution incur cost.
 
-## Third-Party Notice
+## Repository Structure
 
-Third-party components retain their own licenses and usage restrictions. This repository does not distribute GEM weights, SMPL-X assets, body-model files, or generated tensor bundles. Users must obtain restricted assets from their official sources and comply with the corresponding licenses.
+| Path | Purpose |
+|---|---|
+| `motion_agent/agent/`, `graph/`, `app/` | Planner, guards, LangGraph orchestration |
+| `motion_agent/compiler/` | Structured semantics and temporal resolution |
+| `motion_agent/retrieval/`, `constraints/`, `keyframes/` | Grounding and conditioning tools |
+| `motion_agent/generation/` | Frozen GEM adapter and candidate persistence |
+| `motion_agent/tournament/k1_selector.py` | Single-candidate route |
+| `motion_agent/verification/`, `diagnosis/` | Evidence, diagnosis, repair proposals |
+| `motion_agent/state/`, `llm/` | Canonical state/artifacts and API abstraction |
+| `configs/`, `scripts/`, `tests/` | Configuration, entry points, tests |
+| `docs/`, `doc/`, `assets/demo/` | Public docs, implementation guide, real demo |
+| `integrations/GENMO/` | Small external GENMO compatibility patch set |
+
+## Testing
+
+```bash
+python -m pytest tests --ignore=tests/gpu -q
+```
+
+Publication validation: **262 passed, 24 subtests passed**. Local non-GPU unit/contract/integration tests include synthetic fixtures. No new GPU inference or full Phase 11 benchmark was run for publication.
+
+## Current Status
+
+- Phase 3-11 components are implemented; V1 uses K=1 and bypasses Phase 8 Tournament.
+- The real minimal loop is validated, but the published candidate was not accepted.
+- TMR calibration and exact MotionCritic representation support remain unresolved. Installed weights alone do not certify motion.
+- Demo visual prompt v2 issues were fixed afterward and unit-tested, without new real verification.
+- FK22 wide-camera skeleton evidence lacks finger detail and reliable wave counts. Retrieval needs separately prepared HumanML3D/TMR data/index assets.
+- GPU setup is not a turnkey container or fully locked environment; upstream revisions and model availability can change reproduction.
+
+## Acknowledgements and Third-Party Assets
+
+[NVIDIA GEM / GENMO](https://github.com/NVlabs/GENMO) is the frozen generator. Its inspected license is NVIDIA OneWay Noncommercial; the small integration patch set retains attribution and [the upstream license](integrations/GENMO/LICENSE). The complete GENMO checkout is external.
+
+[TMR](https://github.com/Mathux/TMR), [MotionCritic](https://github.com/ou524u/MotionCritic), and [HumanML3D](https://github.com/EricGuo5513/HumanML3D) are external research dependencies. Respect each upstream license and dataset terms. Weights and licensed SMPL-X are installed separately; no blanket commercial-use license for them is implied.

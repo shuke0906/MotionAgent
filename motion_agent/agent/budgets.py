@@ -26,6 +26,11 @@ def get_legal_actions(state: MotionAgentState) -> list[PlannerAction]:
         if verification.status == "complete" and verification.overall_pass and not verification.critical_failures:
             return [PlannerAction.ACCEPT]
 
+    if state.control.budgets.iterations_left <= 0 or state.control.budgets.generations_left <= 0:
+        return [PlannerAction.STOP_FAILED]
+    if state.evaluation.diagnosis_summary and state.evaluation.diagnosis_summary.terminal_hint:
+        return [PlannerAction.STOP_FAILED]
+
     actions: list[PlannerAction] = []
     if state.plan.status == "missing":
         actions.append(PlannerAction.COMPILE_MOTION)
@@ -44,4 +49,3 @@ def get_legal_actions(state: MotionAgentState) -> list[PlannerAction]:
     if stop_failed_allowed(state):
         actions.append(PlannerAction.STOP_FAILED)
     return actions
-

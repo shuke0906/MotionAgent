@@ -1,0 +1,22 @@
+profile: phase9_default_v1
+version: 1
+deterministic:
+  constraint_default_m: 0.05
+  keyframe_rotation_deg: 8.0
+  keyframe_position_m: 0.08
+  foot_skating: 0.20
+  ground_penetration: 0.02
+  smoothness: 10.0
+  kinematic_jerk: 100.0
+  preservation_outside_rmse: 0.05
+learned:
+  tmr: deferred
+  motioncritic: deferred
+  mllm: deferred
+phase9b:
+  config: configs/learned_verifiers.yaml
+  threshold_status: PROVISIONAL
+  tmr_threshold: null
+  motioncritic_threshold: null
+  numerical_evidence_authoritative: true
+  required_learned_uncertain_blocks_acceptance: true

@@ -311,6 +311,9 @@ class MotionSegmentSummary(BaseModel):
     body_parts: list[str]
     style: list[str]
     repetition: int | None
+    temporal_constraint: dict | None
+    temporal_mode: str | None
+    temporal_relation: dict | None
 
     status: str
 ```
@@ -1635,4 +1638,3 @@ LLM Context 不依赖完整 Run History。
 
 所有跨模块 Schema 有唯一 canonical definition。
 ```
-

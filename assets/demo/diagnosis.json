@@ -1,0 +1,240 @@
+{
+  "diagnosis_id": "diag_56380b694f2d",
+  "source_verification_report_id": "phase11_verify_cand_62029139ee35ecf7",
+  "status": "ambiguous",
+  "llm_status": "IMPLEMENTED_NOT_EXECUTED_NO_CREDENTIALS",
+  "diagnosis_summary": "Diagnosed 10 failure(s); root causes: VERIFIER_INFRASTRUCTURE_FAILURE, SAMPLING_VARIANCE, GENERATION_SEMANTIC_EXECUTION_FAILURE, VERIFIER_INFRASTRUCTURE_FAILURE, VERIFIER_INFRASTRUCTURE_FAILURE, UNKNOWN, GENERATION_SEMANTIC_EXECUTION_FAILURE, PHYSICAL_SAMPLING_ARTIFACT; proposed planner actions: STOP_FAILED, GENERATE, GENERATE, STOP_FAILED, STOP_FAILED, STOP_FAILED, GENERATE, GENERATE.",
+  "root_causes": [
+    {
+      "hypothesis_id": "cause_e4b4dd53d633",
+      "cluster_id": "cluster_a010b6cc5b71",
+      "cause_code": "VERIFIER_INFRASTRUCTURE_FAILURE",
+      "confidence": 0.85,
+      "evidence_failure_ids": [
+        "failure_9404141c1866",
+        "failure_a1906319ff4c"
+      ],
+      "supporting_facts": [
+        "Verifier returned no reliable motion evidence."
+      ],
+      "contradicting_facts": [],
+      "affected_segments": [],
+      "ambiguous": false
+    },
+    {
+      "hypothesis_id": "cause_4ed5e319d446",
+      "cluster_id": "cluster_18f0607da3d7",
+      "cause_code": "SAMPLING_VARIANCE",
+      "confidence": 0.74,
+      "evidence_failure_ids": [
+        "failure_61fd278a168b",
+        "failure_ada1b1d05336"
+      ],
+      "supporting_facts": [
+        "Naturalness failed without evidence that semantic compilation changed."
+      ],
+      "contradicting_facts": [],
+      "affected_segments": [],
+      "ambiguous": false
+    },
+    {
+      "hypothesis_id": "cause_7b9ac5e20ed0",
+      "cluster_id": "cluster_db3803d873a1",
+      "cause_code": "GENERATION_SEMANTIC_EXECUTION_FAILURE",
+      "confidence": 0.84,
+      "evidence_failure_ids": [
+        "failure_8f3429fbe45d"
+      ],
+      "supporting_facts": [
+        "Required event exists in structured semantics but was absent from the candidate."
+      ],
+      "contradicting_facts": [],
+      "affected_segments": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "ambiguous": false
+    },
+    {
+      "hypothesis_id": "cause_356dbf0da6d4",
+      "cluster_id": "cluster_4d6b895b29bf",
+      "cause_code": "VERIFIER_INFRASTRUCTURE_FAILURE",
+      "confidence": 0.85,
+      "evidence_failure_ids": [
+        "failure_6444d36a31c4"
+      ],
+      "supporting_facts": [
+        "Verifier returned no reliable motion evidence."
+      ],
+      "contradicting_facts": [],
+      "affected_segments": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "ambiguous": false
+    },
+    {
+      "hypothesis_id": "cause_c9e760c0bb8a",
+      "cluster_id": "cluster_f3d5370c4f2c",
+      "cause_code": "VERIFIER_INFRASTRUCTURE_FAILURE",
+      "confidence": 0.85,
+      "evidence_failure_ids": [
+        "failure_f854353aa1a8"
+      ],
+      "supporting_facts": [
+        "Verifier returned no reliable motion evidence."
+      ],
+      "contradicting_facts": [],
+      "affected_segments": [
+        1
+      ],
+      "ambiguous": false
+    },
+    {
+      "hypothesis_id": "cause_299f992d7c56",
+      "cluster_id": "cluster_3edaa3f122db",
+      "cause_code": "UNKNOWN",
+      "confidence": 0.35,
+      "evidence_failure_ids": [
+        "failure_f755aca961c0"
+      ],
+      "supporting_facts": [
+        "Semantic/event evidence is ambiguous."
+      ],
+      "contradicting_facts": [],
+      "affected_segments": [],
+      "ambiguous": true
+    },
+    {
+      "hypothesis_id": "cause_f049f1e89650",
+      "cluster_id": "cluster_5795de2c9962",
+      "cause_code": "GENERATION_SEMANTIC_EXECUTION_FAILURE",
+      "confidence": 0.86,
+      "evidence_failure_ids": [
+        "failure_20ae853c6daa"
+      ],
+      "supporting_facts": [
+        "Structured semantics preserve the target, but generated motion differs."
+      ],
+      "contradicting_facts": [],
+      "affected_segments": [],
+      "ambiguous": false
+    },
+    {
+      "hypothesis_id": "cause_c0b32d8614fa",
+      "cluster_id": "cluster_c02e45381d5b",
+      "cause_code": "PHYSICAL_SAMPLING_ARTIFACT",
+      "confidence": 0.78,
+      "evidence_failure_ids": [
+        "failure_439c36307019"
+      ],
+      "supporting_facts": [
+        "Physical artifact was observed in the generated candidate."
+      ],
+      "contradicting_facts": [],
+      "affected_segments": [],
+      "ambiguous": false
+    }
+  ],
+  "repair_proposals": [
+    {
+      "proposal_id": "repair_01c2d6cfe07f",
+      "repair_family": "STOP_UNRESOLVABLE",
+      "planner_action": "STOP_FAILED",
+      "reason_code": "UNRECOVERABLE_TOOL_FAILURE",
+      "target_segments": null,
+      "target_body_parts": [],
+      "focus": [
+        "unresolvable"
+      ],
+      "parameters": {},
+      "evidence_refs": [
+        "failure_9404141c1866",
+        "failure_a1906319ff4c"
+      ],
+      "expected_effect": "Surface unresolved failure to the Planner for terminal handling.",
+      "preserve_requirements": [
+        "check:technical",
+        "check:physical_foot_skating",
+        "check:physical_ground_penetration"
+      ],
+      "confidence": 0.7999999999999999,
+      "blocked": false,
+      "rejected_reason": null,
+      "failure_signature": "6f7aade94aeb94193926a0c6a8bc77f4d2eee7ab5a38b47ae9c640e8d5d94c1d",
+      "proposal_fingerprint": "cae6732adf412f0c4252197203f6c59cf4ef1b4e29d5c7f30c9ab57ece81e33e"
+    },
+    {
+      "proposal_id": "repair_ead984dd64dc",
+      "repair_family": "REGENERATE",
+      "planner_action": "GENERATE",
+      "reason_code": "NATURALNESS_FAILURE",
+      "target_segments": null,
+      "target_body_parts": [],
+      "focus": [
+        "naturalness"
+      ],
+      "parameters": {
+        "strategy": "normal",
+        "scope": "full",
+        "num_candidates": 1,
+        "reward_targets": []
+      },
+      "evidence_refs": [
+        "failure_61fd278a168b",
+        "failure_ada1b1d05336"
+      ],
+      "expected_effect": "Regenerate the failed scope to reduce artifacts while preserving validated semantics.",
+      "preserve_requirements": [
+        "check:technical",
+        "check:physical_foot_skating",
+        "check:physical_ground_penetration"
+      ],
+      "confidence": 0.74,
+      "blocked": false,
+      "rejected_reason": null,
+      "failure_signature": "ca9b92e6d46e68ff291af8ab201eda5da83b729f705af29351b427a98a64de97",
+      "proposal_fingerprint": "f45a70c10289fdab3bf72849e8e194b12a4cc43d11f13fc3126943ce4252fb0a"
+    },
+    {
+      "proposal_id": "repair_fb6286551d08",
+      "repair_family": "REGENERATE",
+      "planner_action": "GENERATE",
+      "reason_code": "SEMANTIC_FAILURE",
+      "target_segments": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "target_body_parts": [],
+      "focus": [
+        "event_execution"
+      ],
+      "parameters": {
+        "strategy": "normal",
+        "scope": "segment",
+        "num_candidates": 1,
+        "reward_targets": []
+      },
+      "evidence_refs": [
+        "failure_8f3429fbe45d"
+      ],
+      "expected_effect": "Regenerate while preserving the verified MotionSpecification and failed event requirements.",
+      "preserve_requirements": [
+        "check:technical",
+        "check:physical_foot_skating",
+        "check:physical_ground_penetration"
+      ],
+      "confidence": 0.84,
+      "blocked": false,
+      "rejected_reason": null,
+      "failure_signature": "4367f7cbe7487daa3a3aa0fc82b09edb23968921b0c4b74dd7663fd4beb9f3b5",
+      "proposal_fingerprint": "c95862bf7ac8a1df3f023cac6a1a04d2d79feae65a097ef5680727d1dd0ddc3c"
+    }
+  ]
+}

@@ -6,6 +6,21 @@
 
 # 12. 系统集成总原则
 
+> Phase 7 validation stops after candidate generation/persistence. Its
+> condition interfaces are validated independently of motion satisfaction.
+> Tournament, Verifier and Repair in the full-system topology below belong
+> to later phases. `GENERATE` remains one Planner action, and heavy tensors
+> remain outside planner state. See the revised Phase 7 scope in module 08.
+
+Temporal compilation compatibility: source-clause provenance and structured
+temporal fields live in the MotionSpecification artifact, not a new Planner
+action or enlarged global state. The compiler alone derives timeline boundaries
+and compound concurrent captions. GenerationRequest preserves the actual
+specification and semantic segment bounds. Validation experiments may compare
+legacy/split projections externally, but production has one compiler path and
+no prompt-specific generation branch. Frozen GEM and later-phase modules stay
+unchanged; fixed-environment fresh inference is tested separately from cache.
+
 系统必须保持：
 
 ```text
@@ -461,6 +476,22 @@ Source of Truth：
 
 Generation Tool 不负责猜测 continuity；它只消费 Compiler caption / active condition。Tournament 和 Verifier 只评估已经存在于 MotionSpecification / VerificationSpec 中的 expectation。
 
+# 12.13.2 Temporal Semantics Contract
+
+重复、连续和交替动作同样使用现有模块传递，不新增 Graph Node：
+
+```text
+Motion Compiler Semantic Parser
+→ Temporal Resolver
+→ MotionSpecification.temporal_constraint / temporal_mode / temporal_relation
+→ GenerationRequest.motion_spec
+→ Tournament / Multi-Verifier / Diagnosis
+→ Planner
+```
+
+Planner 不解析 `twice`、`three times`、`repeatedly` 或 `continuously`。Generation
+也不保证实际动作满足这些频次；它只接收结构化 specification。是否满足精确频次由后续 verifier / guided generation / repair 工作处理。
+
 # 12.14 Condition Assembly
 
 进入 Generation 前：
@@ -858,4 +889,3 @@ Crash 后可从最近 commit 继续。
 
 旧版 PLAN / VERIFY / REPAIR / GENERATE_GUIDED 已完全移除。
 ```
-

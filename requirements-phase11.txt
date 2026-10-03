@@ -1,0 +1,29 @@
+# Compatibility versions used for the minimal real run, not a complete lockfile.
+# Install CUDA PyTorch separately, then requirements.txt and this file.
+openai==3.24.0
+numpy
+PyYAML
+hydra-core==1.3.2
+hydra-zen
+hydra-colorlog
+smplx==0.1.28
+einops
+transformers==4.46.3
+pytorch-lightning==2.3.0
+orjson
+sentencepiece
+timm==0.6.7
+av
+rich
+scipy
+opencv-python-headless
+ffmpeg-python
+imageio==2.34.1
+imageio-ffmpeg
+pillow
+termcolor
+joblib
+trimesh
+yacs
+wandb
+gdown

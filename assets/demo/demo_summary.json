@@ -1,0 +1,154 @@
+{
+  "run_id": "phase11_minimal_20261003T003949Z",
+  "prompt": "A person walks forward while waving their right hand three times, then turns left and sits down.",
+  "baseline_seed": 695425565,
+  "agent_seeds": [
+    695425565,
+    486847130
+  ],
+  "checkpoint": "vendor/GENMO/inputs/pretrained/gem_smpl.ckpt",
+  "K": 1,
+  "phase8_status": "BYPASSED_FOR_K1_MODE",
+  "round_count": 2,
+  "repair_count": 1,
+  "planner_backend": "RealLLMPlannerBackend",
+  "compiler_backend": "RealLLMMotionCompiler",
+  "verifier_backends": {
+    "semantic": "TMR",
+    "naturalness": "MotionCritic_strict",
+    "events": "real_mllm"
+  },
+  "candidate_ids": [
+    "cand_62029139ee35ecf7",
+    "cand_d442a42f1adee871"
+  ],
+  "final_candidate_id": "cand_d442a42f1adee871",
+  "verification": {
+    "status": "incomplete",
+    "overall_pass": false,
+    "passed_check_ids": [
+      "technical",
+      "naturalness_kinematic",
+      "physical_foot_skating"
+    ],
+    "failed_check_ids": [
+      "event_integrity",
+      "semantic_compositional",
+      "direction_2",
+      "physical_ground_penetration",
+      "physical_smoothness",
+      "physical"
+    ],
+    "warning_check_ids": [],
+    "uncertain_check_ids": [
+      "semantic",
+      "event_temporal",
+      "event_frequency_1",
+      "motioncritic"
+    ],
+    "critical_failures": [
+      "TMR_THRESHOLD_UNCALIBRATED",
+      "EVENT_MISSING",
+      "MLLM_UNCERTAIN",
+      "MLLM_UNCERTAIN",
+      "MOTIONCRITIC_UNAVAILABLE",
+      "SEMANTIC_MISMATCH",
+      "DIRECTION_MISMATCH",
+      "GROUND_PENETRATION",
+      "MOTION_JITTER",
+      "PHYSICAL_METRIC_FAILURE"
+    ],
+    "affected_segments": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "diagnostic_codes": [
+      "TMR_THRESHOLD_UNCALIBRATED",
+      "EVENT_MISSING",
+      "MLLM_UNCERTAIN",
+      "MLLM_UNCERTAIN",
+      "MOTIONCRITIC_UNAVAILABLE",
+      "SEMANTIC_MISMATCH",
+      "DIRECTION_MISMATCH",
+      "GROUND_PENETRATION",
+      "MOTION_JITTER",
+      "PHYSICAL_METRIC_FAILURE"
+    ]
+  },
+  "final_status": "STOP_FAILED",
+  "terminal_reason": "BUDGET_EXHAUSTED",
+  "total_runtime_s": 343.91,
+  "gpu_peak_vram_mb": 6937.0634765625,
+  "mllm_api_calls": 12,
+  "tmr_inference_calls": 2,
+  "motioncritic_inference_calls": 0,
+  "minimal_real_e2e_gate": "PASS",
+  "known_limitations": [
+    "TMR threshold uncalibrated",
+    "MotionCritic lacks full SMPL terminal hand retargeting",
+    "Skeleton renderer shows actual FK22, no finger animation",
+    "Original temporal prompt v2 included nonexistent 1:walk; original trace preserved, corrected to v3 after this run",
+    "Original v2 visual normalization mapped uncertain missing_actions to fail; fixed after the run, original evidence preserved",
+    "Fixed wide camera and FK22 skeleton limited visible arm/cycle detail; both observed counts remain null",
+    "Learned-verifier full acceptance gate remains PARTIAL; minimal runtime loop gate does not certify motion quality"
+  ],
+  "verification_statuses": [
+    {
+      "candidate_id": "cand_62029139ee35ecf7",
+      "status": "incomplete",
+      "overall_pass": false
+    },
+    {
+      "candidate_id": "cand_d442a42f1adee871",
+      "status": "incomplete",
+      "overall_pass": false
+    }
+  ],
+  "environment": {
+    "gpu": "NVIDIA A100-SXM4-80GB",
+    "vram_mb": 81151.75,
+    "torch": "2.8.0+cu128",
+    "cuda_runtime": "12.8",
+    "smplx_found": true,
+    "gem_checkpoint_found": true
+  },
+  "checkpoint_sha256": "1d15cbe2864d6de61a75e83fdbfe83bec3c7b183eee3d3dcdbd9107e4456454a",
+  "smoke": {
+    "candidate_id": "cand_69f20489384351f8",
+    "status": "success",
+    "latency_ms": 3960.811760276556,
+    "peak_vram_mb": 6805.35205078125,
+    "frames": 90,
+    "feature_dim": 151
+  },
+  "diagnosis_backend": "actual_Phase10_DiagnosisService_rule_first",
+  "post_run_fixes": [
+    "SMPL-X config points to the actual vendor/GENMO asset",
+    "Split simultaneous actions reference the linked event rather than a nonexistent event in their own segment",
+    "Uncertain visual visibility remains uncertain despite a missing_actions list"
+  ],
+  "post_run_fix_validation": "59 targeted tests passed; no new GEM generation or real verification after these fixes",
+  "gate_checks": {
+    "remote_real_api": true,
+    "real_planner": true,
+    "real_compiler": true,
+    "real_gem_and_k1": true,
+    "k1_selector": true,
+    "real_multiverifier": true,
+    "failed_required_cannot_accept": true,
+    "diagnosis_and_proposals_reach_planner": true,
+    "one_repair_only": true,
+    "correct_terminal": true,
+    "no_infinite_loop": true,
+    "required_artifacts_exist": true
+  },
+  "baseline_seed_base": 7,
+  "agent_seed_bases": [
+    7,
+    8
+  ],
+  "gem_runtime_config_artifact": "gem_runtime_config.json",
+  "public_provenance": "Selected real-run evidence; machine paths removed; no post-fix inference"
+}

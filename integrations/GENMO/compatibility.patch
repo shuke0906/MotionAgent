@@ -1,0 +1,88 @@
+diff --git a/gem/gem.py b/gem/gem.py
+index e7de3f4..47ede15 100644
+--- a/gem/gem.py
++++ b/gem/gem.py
+@@ -1093,7 +1093,7 @@ class GEM(pl.LightningModule):
+         return outputs
+ 
+     @torch.no_grad()
+-    def predict(self, data, static_cam=False, postproc=True):
++    def predict(self, data, static_cam=False, postproc=True, seed=None):
+         now = time.time()
+         # ROPE inference
+         test_mode = data["meta"][0].get("mode", "default")
+@@ -1123,6 +1123,27 @@ class GEM(pl.LightningModule):
+             batch["music_embed"] = data["music_embed"][None].cuda()
+         if "audio_array" in data:
+             batch["audio_array"] = data["audio_array"][None].cuda()
++        if "observed_motion_3d" in data or "motion_mask_3d" in data:
++            if "observed_motion_3d" not in data or "motion_mask_3d" not in data:
++                raise ValueError(
++                    "observed_motion_3d and motion_mask_3d must be provided together"
++                )
++            observed_motion_3d = data["observed_motion_3d"]
++            motion_mask_3d = data["motion_mask_3d"]
++            if observed_motion_3d.shape != motion_mask_3d.shape:
++                raise ValueError("observed_motion_3d and motion_mask_3d shape mismatch")
++            if observed_motion_3d.ndim == 2:
++                observed_motion_3d = observed_motion_3d[None]
++                motion_mask_3d = motion_mask_3d[None]
++            if observed_motion_3d.ndim != 3:
++                raise ValueError("hard motion conditions must have shape [B, L, C] or [L, C]")
++            batch["observed_motion_3d"] = observed_motion_3d.cuda()
++            batch["motion_mask_3d"] = motion_mask_3d.cuda()
++            if "rm_text_flag" in data:
++                rm_text_flag = data["rm_text_flag"]
++                if rm_text_flag.ndim == 0:
++                    rm_text_flag = rm_text_flag[None]
++                batch["rm_text_flag"] = rm_text_flag.cuda().bool()
+ 
+         if "fast_rollout" in data:
+             batch["fast_rollout"] = data["fast_rollout"]
+@@ -1140,7 +1161,7 @@ class GEM(pl.LightningModule):
+                 batch["caption"] = [data["caption"]]
+             else:
+                 batch["caption"] = [""]
+-            batch["has_text"] = torch.tensor([True])
++            batch["has_text"] = torch.tensor([True], device=batch["f_imgseq"].device)
+             batch["encoded_text"] = self.encode_text(batch["caption"], batch["has_text"])
+ 
+         batch["f_cliffcam"] = compute_bbox_info_bedlam(batch["bbx_xys"], batch["K_fullimg"]).cuda()
+@@ -1180,13 +1201,30 @@ class GEM(pl.LightningModule):
+             postproc = postproc
+         print(f"Preproc taken: {time.time() - now}")
+         now = time.time()
+-        outputs = self.pipeline.forward(
+-            batch,
+-            train=False,
+-            postproc=postproc,
+-            static_cam=static_cam,
+-            test_mode=test_mode,
+-        )
++        seed = data.get("seed", seed)
++        if seed is None:
++            outputs = self.pipeline.forward(
++                batch,
++                train=False,
++                postproc=postproc,
++                static_cam=static_cam,
++                test_mode=test_mode,
++            )
++        else:
++            cuda_devices = []
++            if batch["target_x"].is_cuda:
++                cuda_devices = [batch["target_x"].device.index or torch.cuda.current_device()]
++            with torch.random.fork_rng(devices=cuda_devices, enabled=True):
++                torch.manual_seed(int(seed))
++                if torch.cuda.is_available():
++                    torch.cuda.manual_seed_all(int(seed))
++                outputs = self.pipeline.forward(
++                    batch,
++                    train=False,
++                    postproc=postproc,
++                    static_cam=static_cam,
++                    test_mode=test_mode,
++                )
+ 
+         pred = {
+             "body_params_global": {k: v[0] for k, v in outputs["pred_body_params_global"].items()},

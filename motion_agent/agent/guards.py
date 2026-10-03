@@ -5,6 +5,7 @@ from __future__ import annotations
 from motion_agent.agent.actions import GeneratePayload, PlannerAction, PlannerDecision
 from motion_agent.agent.budgets import stop_failed_allowed
 from motion_agent.common.errors import MotionAgentError
+from motion_agent.retrieval.signatures import make_retrieval_signature
 from motion_agent.state.schemas import MotionAgentState
 
 
@@ -62,12 +63,24 @@ def _validate_retrieval(state: MotionAgentState, decision: PlannerDecision) -> N
     payload = decision.typed_payload
     target_segments = decision.target_segments or [0]
     for segment_id in target_segments:
+        current_signature = make_retrieval_signature(
+            target_segment=segment_id,
+            normalized_query=payload.query,
+            retrieval_type=payload.retrieval_type,
+            purpose=payload.purpose,
+            corpus_version="fixture_humanml3d_tiny_v1",
+        )
         for retrieval in state.conditions.retrievals:
             if (
                 retrieval.status == "active"
                 and retrieval.segment_id == segment_id
                 and retrieval.retrieval_type == payload.retrieval_type
                 and retrieval.purpose == payload.purpose
+                and (
+                    retrieval.retrieval_signature == current_signature
+                    or retrieval.query == payload.query
+                    or retrieval.retrieval_signature is None
+                )
             ):
                 raise PlannerGuardError("duplicate no-progress retrieval is not allowed")
 
@@ -75,4 +88,3 @@ def _validate_retrieval(state: MotionAgentState, decision: PlannerDecision) -> N
 def _validate_stop_failed(state: MotionAgentState) -> None:
     if not stop_failed_allowed(state):
         raise PlannerGuardError("STOP_FAILED requires exhausted budget or unrecoverable diagnosis")
-

@@ -26,13 +26,12 @@ def _post_node(runtime: ToolRuntime, node_name: str, executor):
 
 
 def make_tournament_node(runtime: ToolRuntime):
-    return _post_node(runtime, "tournament", execute_tournament)
+    return _post_node(runtime, "k1_selector" if runtime.phase11 else "tournament", runtime.selection_executor or execute_tournament)
 
 
 def make_verifier_node(runtime: ToolRuntime):
-    return _post_node(runtime, "verifier", execute_verifier)
+    return _post_node(runtime, "verifier", runtime.verifier_executor or execute_verifier)
 
 
 def make_diagnosis_node(runtime: ToolRuntime):
-    return _post_node(runtime, "diagnosis", execute_diagnosis)
-
+    return _post_node(runtime, "diagnosis", runtime.diagnosis_executor or execute_diagnosis)

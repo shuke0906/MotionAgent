@@ -4,6 +4,67 @@
 
 # 8. GEM Generation Tool
 
+## Phase 7 Infrastructure Scope (Revised)
+
+Phase 7 completes the agentic generation infrastructure. `ConditionBundle`
+means information provided to the generator, not a guarantee of constraint
+satisfaction. The full module design below includes future research goals;
+its preservation/satisfaction requirements are deferred for the Phase 7 gate.
+
+Current path:
+
+```text
+MotionSpecification -> ConditionCompiler -> ConditionBundle
+-> GenerationRequest -> GEM Adapter -> Frozen GEM -> CandidateStore
+```
+
+Temporal semantics from Motion Compiler, including `temporal_constraint`,
+`temporal_mode` and `temporal_relation`, are preserved in
+`GenerationRequest.motion_spec`. This interface guarantees only:
+
+```text
+Natural language
+        ↓
+structured temporal representation
+        ↓
+GenerationRequest
+```
+
+It does not claim that Frozen GEM will execute an exact repetition count.
+Exact event-frequency satisfaction remains future verifier, guided generation
+or repair-loop work.
+
+Concurrent semantic segments may project to a single compound caption.
+`GEMTextCondition.segment_bounds` retains their original ID-to-frame mapping;
+semantic IDs must not be inferred from caption indices. Only preflight target
+validation and segment-range lookup consume this mapping. Legacy conditions
+without it retain their previous index-based interpretation. No GEM model,
+diffusion, mask semantics or sampling algorithm changes are implied.
+
+The gate checks schemas, masks, keyframe specifications, adapter forwarding,
+request metadata, candidate persistence, K sampling, cache, worker health and
+typed failures. Candidate metadata persists the effective `GenerationRequest`,
+including the composed condition handle, verification specifications and
+keyframe specifications. Motion tensors and poses remain in external stores.
+
+Hard-condition error, keyframe error and outside-segment preservation error
+remain collected as research metrics. Report each interface as PASS/FAIL and
+each satisfaction result as `DEFERRED (requires guided generation)`, with a
+separate `tolerance_met` measurement. Satisfaction is not a Phase 7 blocker.
+`constraint_safe` disables GEM postprocessing; it does not enforce targets.
+
+Future insertion point:
+
+```text
+ConditionBundle -> Guided Sampling Module -> Constraint Satisfaction
+```
+
+The existing `GENERATE.strategy` boundary remains available but guided
+generation is feature-gated. Phase 7 does not modify diffusion sampling,
+the denoiser, GEM/T5 weights, losses or the sampling loop. Exact keyframe
+forcing, true diffusion-time inpainting and guided generation are deferred.
+Tournament, Verifier and Repair are outside this phase.
+
 本节定义 GEM Generation Tool 的**实现规范**。
 
 Generation Tool 的职责是：

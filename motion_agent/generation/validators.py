@@ -19,6 +19,10 @@ def validate_generation_request(
         errors.append("guided_generation_not_available")
     if request.scope == "segment" and not request.previous_candidate_id:
         errors.append("segment_scope_requires_previous_candidate")
+    if request.scope == "segment" and not request.target_segments:
+        errors.append("segment_scope_requires_target_segments")
+    if request.scope == "full" and request.target_segments:
+        warnings.append("target_segments_ignored_for_full_generation")
     if request.total_frames > max_request_frames:
         errors.append("request_exceeds_max_request_frames")
     if len(condition.captions) == 0:
@@ -29,6 +33,19 @@ def validate_generation_request(
         if not (0 <= start < end <= 1):
             errors.append("invalid_temporal_window")
             break
+    if request.target_segments:
+        for segment_id in request.target_segments:
+            try:
+                condition.bounds_for_segment(segment_id)
+            except ValueError:
+                errors.append("invalid_target_segment")
+                break
+    if (
+        request.condition_bundle.hard_motion_condition_handle
+        or request.condition_bundle.active_keyframe_ids
+        or request.scope == "segment"
+    ) and request.postprocess_policy == "gem_default":
+        errors.append("constraint_safe_postprocess_required")
     if len(request.seeds) != len(set(request.seeds)):
         warnings.append("duplicate_seeds")
 

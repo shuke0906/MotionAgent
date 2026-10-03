@@ -24,3 +24,18 @@ class ArtifactStoreError(MotionAgentError):
 class CheckpointError(MotionAgentError):
     """Raised when graph checkpoint persistence fails."""
 
+
+class InvalidRequestError(MotionAgentError):
+    """Raised when a typed tool request is structurally invalid."""
+
+
+class InvalidOutputError(MotionAgentError):
+    """Raised when a tool returns malformed or technically invalid output."""
+
+
+class CapabilityUnavailableError(MotionAgentError):
+    """Raised when a requested capability is intentionally unavailable."""
+
+
+class WorkerUnavailableError(MotionAgentError):
+    """Raised when a required worker cannot accept work."""

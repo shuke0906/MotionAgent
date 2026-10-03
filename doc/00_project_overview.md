@@ -6,6 +6,12 @@
 
 # 0. 项目目标
 
+> Phase 7 milestone revision: complete Agentic Generation Infrastructure.
+> Condition construction, adapter forwarding and artifact persistence are
+> required; arbitrary hard-constraint satisfaction, exact keyframe forcing
+> and diffusion-time inpainting are deferred to future Guided Generation.
+> The full-project architecture below remains the long-term design.
+
 MotionAgent 的目标是：
 
 > **在不重新训练 GEM 的前提下，在 Frozen GEM 外建立一个可规划、可检索、可约束、可验证、可定向修复的 Agentic Control Layer，使复杂 Human Motion 指令更稳定地得到满足。**
@@ -456,6 +462,7 @@ Schema Contract Test Pass Rate
 ```text
 Natural Language
 → Semantic Parser
+→ Temporal Resolver
 → Human Motion DSL
 → Timeline
 → Control Intent Hints
@@ -520,7 +527,7 @@ DSL Semantic Accuracy
 
 Timeline Accuracy
 
-Body-Part / Direction / Repetition Recall
+Body-Part / Direction / Structured Temporal Recall
 
 Caption Semantic Preservation
 
@@ -1876,4 +1883,3 @@ industrial_harness_design.md
 如果开始写代码：
 
 > **先把 Schema、State、Request Builder、Guard 和最小闭环实现出来，再逐渐增加复杂 evaluator / retrieval / guidance。**
-

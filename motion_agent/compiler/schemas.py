@@ -40,6 +40,33 @@ Speed = Literal["very_slow", "slow", "normal", "fast", "very_fast"]
 Transition = Literal["continuous", "abrupt", "hold", "pause"]
 HeadingContinuityMode = Literal["free", "inherit_previous", "explicit", "follow_trajectory"]
 HeadingContinuitySource = Literal["user_explicit", "continuity_default", "trajectory", "unknown"]
+TemporalMode = Literal["continuous"]
+TemporalConstraintType = Literal["repetition"]
+TemporalConstraintMode = Literal["cycle"]
+TemporalRelationType = Literal["simultaneous", "alternating"]
+
+
+class TemporalConstraint(StrictModel):
+    type: TemporalConstraintType
+    mode: TemporalConstraintMode = "cycle"
+    count: int | None = None
+    quantifier: str | None = None
+    source_text: str | None = None
+
+    @model_validator(mode="after")
+    def validate_constraint(self) -> "TemporalConstraint":
+        if self.count is not None and self.count <= 0:
+            raise ValueError("temporal repetition count must be positive")
+        if self.count is None and self.quantifier is None:
+            raise ValueError("temporal repetition requires count or quantifier")
+        return self
+
+
+class TemporalRelation(StrictModel):
+    type: TemporalRelationType
+    marker: str | None = None
+    related_action: str | None = None
+    body_parts: list[BodyPart] = Field(default_factory=list)
 
 
 class HeadingContinuitySpec(StrictModel):
@@ -53,17 +80,29 @@ class HeadingContinuitySpec(StrictModel):
 class MotionSegment(StrictModel):
     segment_id: int
     action: str
+    source_text: str | None = None
+    source_start: int | None = None
+    source_end: int | None = None
     secondary_actions: list[str] = Field(default_factory=list)
     body_parts: list[BodyPart] = Field(default_factory=lambda: ["full_body"])
     direction: Direction | None = None
     speed: Speed | None = "normal"
     style: list[str] = Field(default_factory=list)
     repetition: int | None = None
+    temporal_constraint: TemporalConstraint | None = None
+    temporal_mode: TemporalMode | None = None
+    temporal_relation: TemporalRelation | None = None
+    angle_deg: float | None = Field(default=None, gt=0, le=360)
+    parent_segment_id: int | None = None
+    continuation_of: int | None = None
+    simultaneous_with: int | None = None
     frequency: str | None = None
     orientation: str | None = None
     transition: Transition | None = "continuous"
     interaction: dict[str, Any] | None = None
     duration_weight: float = 1.0
+    explicit_duration_s: float | None = Field(default=None, gt=0)
+    duration_s: float | None = Field(default=None, gt=0)
     explicit_start_s: float | None = None
     explicit_end_s: float | None = None
     explicit_event_time_s: float | None = None
@@ -116,6 +155,17 @@ class GEMTextCondition(StrictModel):
     window_start: list[float]
     window_end: list[float]
     total_frames: int
+    segment_bounds: dict[int, tuple[int, int]] = Field(default_factory=dict)
+
+    def bounds_for_segment(self, segment_id: int) -> tuple[int, int]:
+        if self.segment_bounds:
+            if segment_id not in self.segment_bounds:
+                raise ValueError(f"unknown semantic segment {segment_id}")
+            return self.segment_bounds[segment_id]
+        if not 0 <= segment_id < len(self.captions):
+            raise ValueError(f"unknown legacy text segment {segment_id}")
+        return (round(self.window_start[segment_id] * self.total_frames),
+                round(self.window_end[segment_id] * self.total_frames))
 
     @model_validator(mode="after")
     def validate_windows(self) -> "GEMTextCondition":
@@ -124,6 +174,9 @@ class GEMTextCondition(StrictModel):
         for start, end in zip(self.window_start, self.window_end):
             if not (0 <= start <= 1 and 0 <= end <= 1 and start < end):
                 raise ValueError("GEM windows must satisfy 0 <= start < end <= 1")
+        for segment_id, (start, end) in self.segment_bounds.items():
+            if segment_id < 0 or not 0 <= start < end <= self.total_frames:
+                raise ValueError("invalid semantic segment bounds")
         return self
 
 

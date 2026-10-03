@@ -1,0 +1,25 @@
+verification:
+  semantic_backend: tmr
+  naturalness_backend: motioncritic
+  mllm_backend: real
+  tmr_repository: vendor/TMR
+  tmr_run_dir: vendor/TMR/models/tmr_humanml3d_guoh3dfeats
+  smplx_model_path: vendor/GENMO/inputs/checkpoints/body_models/smplx/SMPLX_NEUTRAL.npz
+  motioncritic_repository: vendor/MotionCritic/MotionCritic
+  motioncritic_checkpoint: vendor/MotionCritic/MotionCritic/pretrained/motioncritic_pre.pth
+  motioncritic_hand_policy: require_full_smpl
+  motioncritic_required: true
+  device: cpu
+  provider: openai
+  mllm_model: gpt-4o-2024-08-06
+  mllm_api_key_env: MLLM_API_KEY
+  mllm_timeout_s: 60
+  mllm_max_calls: 16
+  mllm_image_detail: high
+  mllm_contact_sheet: true
+  mllm_rate_limit_retry_s: 65
+  output_root: outputs/phase9b_real_verifiers
+  tmr_threshold: null
+  motioncritic_threshold: null
+  threshold_status: PROVISIONAL
+  storyboard_max_frames: 240

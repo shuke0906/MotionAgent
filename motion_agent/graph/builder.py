@@ -31,13 +31,14 @@ PHASE2_NODE_NAMES = {
 def build_motion_graph(*, checkpointer, runtime: ToolRuntime, planner: Planner):
     builder = StateGraph(GraphState)
 
-    builder.add_node("planner", make_planner_node(state_store=runtime.state_store, planner=planner))
+    builder.add_node("planner", make_planner_node(state_store=runtime.state_store, planner=planner, runtime=runtime))
     builder.add_node("compile_motion", make_action_node(runtime, "compile_motion"))
     builder.add_node("retrieval", make_action_node(runtime, "retrieval"))
     builder.add_node("constraint", make_action_node(runtime, "constraint"))
     builder.add_node("keyframe", make_action_node(runtime, "keyframe"))
     builder.add_node("generation", make_action_node(runtime, "generation"))
-    builder.add_node("tournament", make_tournament_node(runtime))
+    selector = "k1_selector" if runtime.phase11 else "tournament"
+    builder.add_node(selector, make_tournament_node(runtime))
     builder.add_node("verifier", make_verifier_node(runtime))
     builder.add_node("diagnosis", make_diagnosis_node(runtime))
     builder.add_node("accept", make_accept_node(runtime))
@@ -49,12 +50,18 @@ def build_motion_graph(*, checkpointer, runtime: ToolRuntime, planner: Planner):
     for node_name in ["compile_motion", "retrieval", "constraint", "keyframe"]:
         builder.add_edge(node_name, "planner")
 
-    builder.add_edge("generation", "tournament")
-    builder.add_edge("tournament", "verifier")
-    builder.add_edge("verifier", "diagnosis")
+    builder.add_edge("generation", selector)
+    builder.add_edge(selector, "verifier")
+    if runtime.phase11:
+        def route_verification(graph_state):
+            envelope = GraphState.model_validate(graph_state)
+            summary = runtime.state_store.load_latest(envelope.run_id).evaluation.verification_summary
+            return "planner" if summary and summary.status == "complete" and summary.overall_pass else "diagnosis"
+        builder.add_conditional_edges("verifier", route_verification, {"planner": "planner", "diagnosis": "diagnosis"})
+    else:
+        builder.add_edge("verifier", "diagnosis")
     builder.add_edge("diagnosis", "planner")
     builder.add_edge("accept", END)
     builder.add_edge("stop_failed", END)
 
     return builder.compile(checkpointer=checkpointer, name="motion_agent_phase2")
-

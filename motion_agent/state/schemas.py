@@ -72,6 +72,9 @@ class MotionSegmentSummary(StrictModel):
     body_parts: list[str] = Field(default_factory=list)
     style: list[str] = Field(default_factory=list)
     repetition: int | None = None
+    temporal_constraint: dict[str, Any] | None = None
+    temporal_mode: Literal["continuous"] | None = None
+    temporal_relation: dict[str, Any] | None = None
     heading_continuity: HeadingContinuitySummary | None = None
     status: str = "active"
 
@@ -105,6 +108,9 @@ class RetrievalSummary(StrictModel):
     retrieval_type: Literal["caption", "motion", "pose", "trajectory"]
     purpose: Literal["prompt_grounding", "motion_prior", "keyframe_source", "constraint_source"]
     score: float | None = None
+    query: str | None = None
+    retrieval_signature: str | None = None
+    corpus_version: str | None = None
     status: Literal["active", "superseded", "low_confidence", "invalid"] = "active"
 
 
@@ -166,6 +172,10 @@ class RepairProposalSummary(StrictModel):
     reason_code: str
     target_segments: list[int] | None = None
     confidence: float
+    repair_family: str | None = None
+    failure_signature: str | None = None
+    proposal_fingerprint: str | None = None
+    parameters: dict[str, Any] = Field(default_factory=dict)
 
 
 class DiagnosisSummary(StrictModel):
@@ -200,6 +210,7 @@ class BlockedRepairFamily(StrictModel):
 
 class RepairState(StrictModel):
     active_proposal_id: str | None = None
+    history_artifact_id: str | None = None
     recent_repairs: list[RepairHistorySummary] = Field(default_factory=list)
     blocked_repair_families: list[BlockedRepairFamily] = Field(default_factory=list)
 
@@ -209,6 +220,8 @@ class BudgetState(StrictModel):
     generations_left: int = 4
     retrieval_calls_left: int = 4
     guided_generations_left: int = 1
+    planner_steps_left: int = 20
+    repairs_left: int = 3
     llm_judge_calls_left: int | None = None
     max_total_candidates_left: int | None = None
 

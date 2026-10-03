@@ -50,6 +50,8 @@ def referenced_artifact_ids(state: MotionAgentState) -> set[str]:
         ids.add(state.evaluation.latest_verification_id)
     if state.evaluation.latest_diagnosis_id:
         ids.add(state.evaluation.latest_diagnosis_id)
+    if state.repair.history_artifact_id:
+        ids.add(state.repair.history_artifact_id)
     return ids
 
 
@@ -65,6 +67,8 @@ def validate_state_invariants(
         budgets.generations_left,
         budgets.retrieval_calls_left,
         budgets.guided_generations_left,
+        budgets.planner_steps_left,
+        budgets.repairs_left,
     ) < 0:
         raise StateInvariantError("generation_budget cannot become negative")
 
@@ -101,4 +105,3 @@ def validate_state_invariants(
         for artifact_id in referenced_artifact_ids(state):
             if not artifact_store.exists(artifact_id):
                 raise MissingArtifactError(f"artifact handle does not exist: {artifact_id}")
-

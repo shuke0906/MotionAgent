@@ -24,7 +24,7 @@ from motion_agent.state.versioning import StateStore
 class MotionAgentOrchestrator:
     """Create, invoke, interrupt, and resume the Phase 2 LangGraph runtime."""
 
-    def __init__(self, root: str | Path, planner: Planner) -> None:
+    def __init__(self, root: str | Path, planner: Planner, *, runtime_factory=None) -> None:
         self.root = Path(root)
         self.root.mkdir(parents=True, exist_ok=True)
         self.artifact_store = ArtifactStore(self.root / "artifacts")
@@ -40,6 +40,8 @@ class MotionAgentOrchestrator:
             artifact_store=self.artifact_store,
             reducer=self.reducer,
         )
+        if runtime_factory is not None:
+            self.runtime = runtime_factory(self.runtime)
         self.planner = planner
         self.checkpoint_db = self.root / "checkpoints" / "langgraph.sqlite3"
         self.checkpoint_db.parent.mkdir(parents=True, exist_ok=True)

@@ -1,0 +1,2356 @@
+{
+  "run_id": "phase11_minimal_20261003T003949Z",
+  "raw_prompt": "A person walks forward while waving their right hand three times, then turns left and sits down.",
+  "steps": [
+    {
+      "order": 0,
+      "timestamp": "2026-10-03T00:39:49.658520+00:00",
+      "node": "run_created",
+      "round": 0,
+      "input_artifact_handles": [],
+      "output_artifact_handles": [],
+      "budget": {
+        "iterations_left": 40,
+        "generations_left": 2,
+        "retrieval_calls_left": 4,
+        "guided_generations_left": 1,
+        "planner_steps_left": 10,
+        "repairs_left": 1,
+        "llm_judge_calls_left": null,
+        "max_total_candidates_left": null
+      },
+      "candidate_id": null,
+      "verification": null,
+      "diagnosis": null,
+      "terminal_reason": null,
+      "executed_artifacts": []
+    },
+    {
+      "order": 1,
+      "timestamp": "2026-10-03T00:39:57.518022+00:00",
+      "node": "planner_decision_committed",
+      "round": 0,
+      "input_artifact_handles": [],
+      "output_artifact_handles": [
+        "planner_decision_32fe983c7d1190a9"
+      ],
+      "budget": {
+        "iterations_left": 39,
+        "generations_left": 2,
+        "retrieval_calls_left": 4,
+        "guided_generations_left": 1,
+        "planner_steps_left": 9,
+        "repairs_left": 1,
+        "llm_judge_calls_left": null,
+        "max_total_candidates_left": null
+      },
+      "candidate_id": null,
+      "verification": null,
+      "diagnosis": null,
+      "terminal_reason": null,
+      "executed_artifacts": [
+        {
+          "handle": "planner_decision_32fe983c7d1190a9",
+          "planner_decision": {
+            "schema": "PlannerDecision",
+            "action": "COMPILE_MOTION",
+            "reason_code": "INITIAL_COMPILE",
+            "target_segments": null,
+            "reason_summary": "Create the initial motion plan and text condition for walking with three right-hand waves, followed by a left turn and sitting.",
+            "payload": {
+              "mode": "initial",
+              "focus": [
+                "semantic",
+                "timeline",
+                "frequency",
+                "body_part"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "order": 2,
+      "timestamp": "2026-10-03T00:40:03.119780+00:00",
+      "node": "compile_motion_committed",
+      "round": 0,
+      "input_artifact_handles": [],
+      "output_artifact_handles": [
+        "spec_10ad220de9043d06",
+        "textcond_68b3232eab85d129"
+      ],
+      "budget": {
+        "iterations_left": 38,
+        "generations_left": 2,
+        "retrieval_calls_left": 4,
+        "guided_generations_left": 1,
+        "planner_steps_left": 9,
+        "repairs_left": 1,
+        "llm_judge_calls_left": null,
+        "max_total_candidates_left": null
+      },
+      "candidate_id": null,
+      "verification": null,
+      "diagnosis": null,
+      "terminal_reason": null,
+      "executed_artifacts": [
+        {
+          "handle": "spec_10ad220de9043d06",
+          "compiler_segments": [
+            {
+              "segment_id": 0,
+              "action": "walk",
+              "body_parts": [
+                "full_body"
+              ],
+              "direction": "forward",
+              "repetition": null,
+              "temporal_relation": null,
+              "simultaneous_with": null
+            },
+            {
+              "segment_id": 1,
+              "action": "wave",
+              "body_parts": [
+                "right_hand"
+              ],
+              "direction": null,
+              "repetition": 3,
+              "temporal_relation": {
+                "type": "simultaneous",
+                "marker": "while",
+                "related_action": "walk",
+                "body_parts": [
+                  "right_hand"
+                ]
+              },
+              "simultaneous_with": 0
+            },
+            {
+              "segment_id": 2,
+              "action": "turn",
+              "body_parts": [
+                "full_body"
+              ],
+              "direction": "left",
+              "repetition": null,
+              "temporal_relation": null,
+              "simultaneous_with": null
+            },
+            {
+              "segment_id": 3,
+              "action": "sit_down",
+              "body_parts": [
+                "full_body"
+              ],
+              "direction": null,
+              "repetition": null,
+              "temporal_relation": null,
+              "simultaneous_with": null
+            }
+          ]
+        },
+        {
+          "handle": "textcond_68b3232eab85d129"
+        }
+      ]
+    },
+    {
+      "order": 3,
+      "timestamp": "2026-10-03T00:40:05.446849+00:00",
+      "node": "planner_decision_committed",
+      "round": 0,
+      "input_artifact_handles": [],
+      "output_artifact_handles": [
+        "planner_decision_1133d94aaa9812d2"
+      ],
+      "budget": {
+        "iterations_left": 37,
+        "generations_left": 2,
+        "retrieval_calls_left": 4,
+        "guided_generations_left": 1,
+        "planner_steps_left": 8,
+        "repairs_left": 1,
+        "llm_judge_calls_left": null,
+        "max_total_candidates_left": null
+      },
+      "candidate_id": null,
+      "verification": null,
+      "diagnosis": null,
+      "terminal_reason": null,
+      "executed_artifacts": [
+        {
+          "handle": "planner_decision_1133d94aaa9812d2",
+          "planner_decision": {
+            "schema": "PlannerDecision",
+            "action": "GENERATE",
+            "reason_code": "CONDITIONS_READY",
+            "target_segments": null,
+            "reason_summary": "The plan and text condition are ready for generation.",
+            "payload": {
+              "strategy": "normal",
+              "scope": "full",
+              "num_candidates": 1,
+              "reward_targets": []
+            }
+          }
+        }
+      ]
+    },
+    {
+      "order": 4,
+      "timestamp": "2026-10-03T00:40:14.856266+00:00",
+      "node": "generation_committed",
+      "round": 1,
+      "input_artifact_handles": [],
+      "output_artifact_handles": [
+        "gen_8f2477f93abd",
+        "cand_62029139ee35ecf7"
+      ],
+      "budget": {
+        "iterations_left": 36,
+        "generations_left": 1,
+        "retrieval_calls_left": 4,
+        "guided_generations_left": 1,
+        "planner_steps_left": 8,
+        "repairs_left": 1,
+        "llm_judge_calls_left": null,
+        "max_total_candidates_left": null
+      },
+      "candidate_id": null,
+      "verification": null,
+      "diagnosis": null,
+      "terminal_reason": null,
+      "executed_artifacts": [
+        {
+          "handle": "gen_8f2477f93abd",
+          "generation": {
+            "status": "success",
+            "candidates": [
+              {
+                "candidate_id": "cand_62029139ee35ecf7",
+                "seed": 695425565
+              }
+            ]
+          }
+        },
+        {
+          "handle": "cand_62029139ee35ecf7"
+        }
+      ]
+    },
+    {
+      "order": 5,
+      "timestamp": "2026-10-03T00:40:14.917832+00:00",
+      "node": "k1_selection_committed",
+      "round": 1,
+      "input_artifact_handles": [],
+      "output_artifact_handles": [
+        "selection_0549413c7df97631"
+      ],
+      "budget": {
+        "iterations_left": 35,
+        "generations_left": 1,
+        "retrieval_calls_left": 4,
+        "guided_generations_left": 1,
+        "planner_steps_left": 8,
+        "repairs_left": 1,
+        "llm_judge_calls_left": null,
+        "max_total_candidates_left": null
+      },
+      "candidate_id": "cand_62029139ee35ecf7",
+      "verification": null,
+      "diagnosis": null,
+      "terminal_reason": null,
+      "executed_artifacts": [
+        {
+          "handle": "selection_0549413c7df97631",
+          "k1_selection": "cand_62029139ee35ecf7"
+        }
+      ]
+    },
+    {
+      "order": 6,
+      "timestamp": "2026-10-03T00:41:55.830302+00:00",
+      "node": "verification_committed",
+      "round": 1,
+      "input_artifact_handles": [],
+      "output_artifact_handles": [
+        "phase11_verify_cand_62029139ee35ecf7"
+      ],
+      "budget": {
+        "iterations_left": 34,
+        "generations_left": 1,
+        "retrieval_calls_left": 4,
+        "guided_generations_left": 1,
+        "planner_steps_left": 8,
+        "repairs_left": 1,
+        "llm_judge_calls_left": null,
+        "max_total_candidates_left": null
+      },
+      "candidate_id": "cand_62029139ee35ecf7",
+      "verification": {
+        "status": "incomplete",
+        "overall_pass": false,
+        "passed_check_ids": [
+          "technical",
+          "physical_foot_skating",
+          "physical_ground_penetration"
+        ],
+        "failed_check_ids": [
+          "naturalness_kinematic",
+          "event_integrity",
+          "semantic_compositional",
+          "direction_2",
+          "physical_smoothness",
+          "physical"
+        ],
+        "warning_check_ids": [],
+        "uncertain_check_ids": [
+          "semantic",
+          "event_temporal",
+          "event_frequency_1",
+          "motioncritic"
+        ],
+        "critical_failures": [
+          "TMR_THRESHOLD_UNCALIBRATED",
+          "KINEMATIC_JITTER",
+          "EVENT_MISSING",
+          "MLLM_UNCERTAIN",
+          "MLLM_UNCERTAIN",
+          "MOTIONCRITIC_UNAVAILABLE",
+          "SEMANTIC_MISMATCH",
+          "DIRECTION_MISMATCH",
+          "MOTION_JITTER",
+          "PHYSICAL_METRIC_FAILURE"
+        ],
+        "affected_segments": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "diagnostic_codes": [
+          "TMR_THRESHOLD_UNCALIBRATED",
+          "KINEMATIC_JITTER",
+          "EVENT_MISSING",
+          "MLLM_UNCERTAIN",
+          "MLLM_UNCERTAIN",
+          "MOTIONCRITIC_UNAVAILABLE",
+          "SEMANTIC_MISMATCH",
+          "DIRECTION_MISMATCH",
+          "MOTION_JITTER",
+          "PHYSICAL_METRIC_FAILURE"
+        ]
+      },
+      "diagnosis": null,
+      "terminal_reason": null,
+      "executed_artifacts": [
+        {
+          "handle": "phase11_verify_cand_62029139ee35ecf7",
+          "verification": {
+            "candidate_id": "cand_62029139ee35ecf7",
+            "verification_id": "phase11_verify_cand_62029139ee35ecf7",
+            "status": "incomplete",
+            "overall_pass": false,
+            "findings": [
+              {
+                "check_id": "technical",
+                "direction": "technical",
+                "status": "pass",
+                "required": true,
+                "diagnostic_code": null,
+                "expected": {},
+                "observed": {
+                  "shape": [
+                    420,
+                    151
+                  ],
+                  "smpl_keys": [
+                    "betas",
+                    "body_pose",
+                    "global_orient",
+                    "transl"
+                  ]
+                },
+                "measured_value": null,
+                "threshold": null
+              },
+              {
+                "check_id": "semantic",
+                "direction": "semantic",
+                "status": "uncertain",
+                "required": true,
+                "diagnostic_code": "TMR_THRESHOLD_UNCALIBRATED",
+                "expected": {},
+                "observed": {
+                  "semantic_text": "A person performs these actions: walk forward; wave right hand; turn left; sit down.",
+                  "feature_shape": [
+                    279,
+                    263
+                  ],
+                  "score_scale": "(cosine+1)/2",
+                  "threshold_status": "PROVISIONAL",
+                  "source": "real_tmr"
+                },
+                "measured_value": 0.7304432988166809,
+                "threshold": null
+              },
+              {
+                "check_id": "naturalness_kinematic",
+                "direction": "naturalness",
+                "status": "fail",
+                "required": true,
+                "diagnostic_code": "KINEMATIC_JITTER",
+                "expected": {},
+                "observed": {
+                  "root_jerk_m_s3": 224.05165100097656,
+                  "root_acceleration_m_s2": 4.104800701141357,
+                  "body_rotation_step_rad": 0.11369473487138748,
+                  "source": "actual_smpl_parameters"
+                },
+                "measured_value": 224.05165100097656,
+                "threshold": 100.0
+              },
+              {
+                "check_id": "event_integrity",
+                "direction": "event_integrity",
+                "status": "fail",
+                "required": true,
+                "diagnostic_code": "EVENT_MISSING",
+                "expected": {
+                  "events": [
+                    {
+                      "event_id": "0:walk",
+                      "segment_id": 0,
+                      "action": "walk",
+                      "body_parts": [
+                        "full_body"
+                      ],
+                      "direction": "forward"
+                    },
+                    {
+                      "event_id": "1:wave",
+                      "segment_id": 1,
+                      "action": "wave",
+                      "body_parts": [
+                        "right_hand"
+                      ],
+                      "direction": null
+                    },
+                    {
+                      "event_id": "2:turn",
+                      "segment_id": 2,
+                      "action": "turn",
+                      "body_parts": [
+                        "full_body"
+                      ],
+                      "direction": null
+                    },
+                    {
+                      "event_id": "3:sit_down",
+                      "segment_id": 3,
+                      "action": "sit_down",
+                      "body_parts": [
+                        "full_body"
+                      ],
+                      "direction": null
+                    }
+                  ]
+                },
+                "observed": {
+                  "status": "uncertain",
+                  "observed_actions": [
+                    "The figure changes position slightly while upright.",
+                    "The figure changes its facing orientation.",
+                    "The figure lowers into a bent-knee posture."
+                  ],
+                  "missing_actions": [
+                    "Clearly identifiable forward walking",
+                    "Clearly identifiable right-hand wave",
+                    "Confirmed sit-down rather than a crouch"
+                  ],
+                  "body_part_match": null,
+                  "direction_match": null,
+                  "confidence": 0.72,
+                  "evidence": [
+                    {
+                      "timestamp_s": 0.0,
+                      "observation": "The figure is upright with an arm raised; this frame alone does not establish a wave."
+                    },
+                    {
+                      "timestamp_s": 2.2667,
+                      "observation": "The upright figure has shifted slightly, but its travel direction relative to its facing is unclear."
+                    },
+                    {
+                      "timestamp_s": 7.2667,
+                      "observation": "The figure's orientation differs from earlier frames, supporting a turn."
+                    },
+                    {
+                      "timestamp_s": 8.8667,
+                      "observation": "The knees begin to bend and the body lowers."
+                    },
+                    {
+                      "timestamp_s": 9.7333,
+                      "observation": "The figure remains low with bent knees; no seat is discernible, so sitting cannot be distinguished confidently from crouching."
+                    }
+                  ],
+                  "source": "real_mllm",
+                  "provider": "openai",
+                  "model": "gpt-6-sol",
+                  "attempts": 1,
+                  "prompt_version": "event_integrity_visual_v2"
+                },
+                "measured_value": null,
+                "threshold": null
+              },
+              {
+                "check_id": "event_temporal",
+                "direction": "event_temporal",
+                "status": "uncertain",
+                "required": true,
+                "diagnostic_code": "MLLM_UNCERTAIN",
+                "expected": {
+                  "events": [
+                    {
+                      "event_id": "0:walk",
+                      "segment_id": 0,
+                      "action": "walk",
+                      "body_parts": [
+                        "full_body"
+                      ],
+                      "direction": "forward"
+                    },
+                    {
+                      "event_id": "1:wave",
+                      "segment_id": 1,
+                      "action": "wave",
+                      "body_parts": [
+                        "right_hand"
+                      ],
+                      "direction": null
+                    },
+                    {
+                      "event_id": "2:turn",
+                      "segment_id": 2,
+                      "action": "turn",
+                      "body_parts": [
+                        "full_body"
+                      ],
+                      "direction": null
+                    },
+                    {
+                      "event_id": "3:sit_down",
+                      "segment_id": 3,
+                      "action": "sit_down",
+                      "body_parts": [
+                        "full_body"
+                      ],
+                      "direction": null
+                    }
+                  ],
+                  "relations": [
+                    {
+                      "type": "simultaneous",
+                      "left": "0:walk",
+                      "right": "1:wave"
+                    },
+                    {
+                      "type": "before",
+                      "left": "0:walk",
+                      "right": "2:turn"
+                    },
+                    {
+                      "type": "before",
+                      "left": "0:walk",
+                      "right": "3:sit_down"
+                    },
+                    {
+                      "type": "simultaneous",
+                      "left": "1:wave",
+                      "right": "1:walk"
+                    },
+                    {
+                      "type": "before",
+                      "left": "1:wave",
+                      "right": "2:turn"
+                    },
+                    {
+                      "type": "before",
+                      "left": "1:wave",
+                      "right": "3:sit_down"
+                    },
+                    {
+                      "type": "before",
+                      "left": "2:turn",
+                      "right": "3:sit_down"
+                    }
+                  ],
+                  "expected_order": [
+                    "0:walk",
+                    "1:wave",
+                    "2:turn",
+                    "3:sit_down"
+                  ]
+                },
+                "observed": {
+                  "status": "uncertain",
+                  "expected_order": [
+                    "0:walk",
+                    "1:wave",
+                    "2:turn",
+                    "3:sit_down"
+                  ],
+                  "observed_order": [
+                    "1:wave",
+                    "0:walk",
+                    "2:turn",
+                    "3:sit_down"
+                  ],
+                  "relation_match": null,
+                  "observed_intervals": [
+                    {
+                      "event_id": "1:wave",
+                      "start_s": 0.0,
+                      "end_s": 2.0
+                    },
+                    {
+                      "event_id": "0:walk",
+                      "start_s": 1.5,
+                      "end_s": 2.3
+                    },
+                    {
+                      "event_id": "2:turn",
+                      "start_s": 6.6,
+                      "end_s": 8.7
+                    },
+                    {
+                      "event_id": "3:sit_down",
+                      "start_s": 8.8,
+                      "end_s": 9.7
+                    }
+                  ],
+                  "confidence": 0.35,
+                  "evidence": [
+                    {
+                      "timestamp_s": 0.0,
+                      "observation": "The figure is upright with an arm raised; its position appears nearly unchanged in the early images."
+                    },
+                    {
+                      "timestamp_s": 1.5,
+                      "observation": "The arm posture changes, and the figure begins a small shift in position."
+                    },
+                    {
+                      "timestamp_s": 2.3,
+                      "observation": "The figure appears upright again; the small size makes walking direction and the arm action difficult to identify."
+                    },
+                    {
+                      "timestamp_s": 7.0,
+                      "observation": "The figure's orientation appears to change compared with earlier images."
+                    },
+                    {
+                      "timestamp_s": 8.8,
+                      "observation": "The knees begin bending and the body lowers."
+                    },
+                    {
+                      "timestamp_s": 9.7,
+                      "observation": "The figure remains low, but the images do not clearly distinguish sitting from a crouch."
+                    }
+                  ],
+                  "source": "real_mllm",
+                  "provider": "openai",
+                  "model": "gpt-6-sol",
+                  "attempts": 2,
+                  "prompt_version": "event_temporal_visual_v2"
+                },
+                "measured_value": null,
+                "threshold": null
+              },
+              {
+                "check_id": "event_frequency_1",
+                "direction": "event_frequency",
+                "status": "uncertain",
+                "required": true,
+                "diagnostic_code": "MLLM_UNCERTAIN",
+                "expected": {
+                  "event": "wave",
+                  "body_parts": [
+                    "right_hand"
+                  ],
+                  "expected_count": 3,
+                  "target_segments": [
+                    1
+                  ]
+                },
+                "observed": {
+                  "status": "uncertain",
+                  "event": "wave",
+                  "body_part": "right_hand",
+                  "expected_count": 3,
+                  "observed_count": null,
+                  "confidence": 0.87,
+                  "evidence_timestamps": [
+                    0.0,
+                    1.5,
+                    2.2,
+                    4.5,
+                    8.5
+                  ],
+                  "body_part_match": null,
+                  "source": "real_mllm",
+                  "provider": "openai",
+                  "model": "gpt-6-sol",
+                  "attempts": 2,
+                  "prompt_version": "event_frequency_visual_v2"
+                },
+                "measured_value": null,
+                "threshold": null
+              },
+              {
+                "check_id": "motioncritic",
+                "direction": "naturalness",
+                "status": "uncertain",
+                "required": true,
+                "diagnostic_code": "MOTIONCRITIC_UNAVAILABLE",
+                "expected": {},
+                "observed": {},
+                "measured_value": null,
+                "threshold": null
+              },
+              {
+                "check_id": "semantic_compositional",
+                "direction": "semantic",
+                "status": "fail",
+                "required": true,
+                "diagnostic_code": "SEMANTIC_MISMATCH",
+                "expected": {
+                  "events": [
+                    {
+                      "event_id": "0:walk",
+                      "segment_id": 0,
+                      "action": "walk",
+                      "body_parts": [
+                        "full_body"
+                      ],
+                      "direction": "forward"
+                    },
+                    {
+                      "event_id": "1:wave",
+                      "segment_id": 1,
+                      "action": "wave",
+                      "body_parts": [
+                        "right_hand"
+                      ],
+                      "direction": null
+                    },
+                    {
+                      "event_id": "2:turn",
+                      "segment_id": 2,
+                      "action": "turn",
+                      "body_parts": [
+                        "full_body"
+                      ],
+                      "direction": null
+                    },
+                    {
+                      "event_id": "3:sit_down",
+                      "segment_id": 3,
+                      "action": "sit_down",
+                      "body_parts": [
+                        "full_body"
+                      ],
+                      "direction": null
+                    }
+                  ]
+                },
+                "observed": {
+                  "status": "uncertain",
+                  "observed_actions": [
+                    "The figure shows small changes in position and leg pose between 0.0s and 3.0s.",
+                    "An arm changes position around 4.0s\u20136.0s, and the figure's facing appears to change by 8.0s.",
+                    "The figure lowers from standing into a bent-knee pose between 8.5s and 9.5s and remains there through 13.97s."
+                  ],
+                  "missing_actions": [
+                    "A clearly identifiable right-hand wave is not visible at this scale.",
+                    "Forward walking direction cannot be established.",
+                    "The final pose cannot be clearly distinguished as sitting rather than crouching."
+                  ],
+                  "body_part_match": null,
+                  "direction_match": null,
+                  "confidence": 0.62,
+                  "evidence": [
+                    {
+                      "timestamp_s": 0.0,
+                      "observation": "The full figure is upright."
+                    },
+                    {
+                      "timestamp_s": 3.0,
+                      "observation": "The figure remains upright, with a slightly changed leg pose and position."
+                    },
+                    {
+                      "timestamp_s": 5.5,
+                      "observation": "An arm is raised, but the hand and its movement are difficult to resolve."
+                    },
+                    {
+                      "timestamp_s": 8.5,
+                      "observation": "The figure is still upright."
+                    },
+                    {
+                      "timestamp_s": 9.5,
+                      "observation": "The knees are bent and the body is lowered."
+                    },
+                    {
+                      "timestamp_s": 13.9667,
+                      "observation": "The lowered, bent-knee pose persists; no seat is visible."
+                    }
+                  ],
+                  "source": "real_mllm",
+                  "provider": "openai",
+                  "model": "gpt-6-sol",
+                  "attempts": 1,
+                  "prompt_version": "semantic_visual_v2"
+                },
+                "measured_value": null,
+                "threshold": null
+              },
+              {
+                "check_id": "direction_2",
+                "direction": "semantic",
+                "status": "fail",
+                "required": true,
+                "diagnostic_code": "DIRECTION_MISMATCH",
+                "expected": {
+                  "direction": "left"
+                },
+                "observed": {
+                  "source": "deterministic_geometry",
+                  "units": "degrees",
+                  "left_positive": true
+                },
+                "measured_value": -148.96707346952812,
+                "threshold": 0.0
+              },
+              {
+                "check_id": "physical_foot_skating",
+                "direction": "physical",
+                "status": "pass",
+                "required": true,
+                "diagnostic_code": null,
+                "expected": {},
+                "observed": {},
+                "measured_value": 0.07554067671298981,
+                "threshold": 0.2
+              },
+              {
+                "check_id": "physical_ground_penetration",
+                "direction": "physical",
+                "status": "pass",
+                "required": true,
+                "diagnostic_code": null,
+                "expected": {},
+                "observed": {},
+                "measured_value": 0.0,
+                "threshold": 0.02
+              },
+              {
+                "check_id": "physical_smoothness",
+                "direction": "physical",
+                "status": "fail",
+                "required": true,
+                "diagnostic_code": "MOTION_JITTER",
+                "expected": {},
+                "observed": {},
+                "measured_value": 12.573344230651855,
+                "threshold": 10.0
+              },
+              {
+                "check_id": "physical",
+                "direction": "physical",
+                "status": "fail",
+                "required": true,
+                "diagnostic_code": "PHYSICAL_METRIC_FAILURE",
+                "expected": {},
+                "observed": {},
+                "measured_value": null,
+                "threshold": null
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "order": 7,
+      "timestamp": "2026-10-03T00:41:55.891313+00:00",
+      "node": "diagnosis_committed",
+      "round": 1,
+      "input_artifact_handles": [],
+      "output_artifact_handles": [
+        "diag_56380b694f2d"
+      ],
+      "budget": {
+        "iterations_left": 33,
+        "generations_left": 1,
+        "retrieval_calls_left": 4,
+        "guided_generations_left": 1,
+        "planner_steps_left": 8,
+        "repairs_left": 1,
+        "llm_judge_calls_left": null,
+        "max_total_candidates_left": null
+      },
+      "candidate_id": "cand_62029139ee35ecf7",
+      "verification": {
+        "status": "incomplete",
+        "overall_pass": false,
+        "passed_check_ids": [
+          "technical",
+          "physical_foot_skating",
+          "physical_ground_penetration"
+        ],
+        "failed_check_ids": [
+          "naturalness_kinematic",
+          "event_integrity",
+          "semantic_compositional",
+          "direction_2",
+          "physical_smoothness",
+          "physical"
+        ],
+        "warning_check_ids": [],
+        "uncertain_check_ids": [
+          "semantic",
+          "event_temporal",
+          "event_frequency_1",
+          "motioncritic"
+        ],
+        "critical_failures": [
+          "TMR_THRESHOLD_UNCALIBRATED",
+          "KINEMATIC_JITTER",
+          "EVENT_MISSING",
+          "MLLM_UNCERTAIN",
+          "MLLM_UNCERTAIN",
+          "MOTIONCRITIC_UNAVAILABLE",
+          "SEMANTIC_MISMATCH",
+          "DIRECTION_MISMATCH",
+          "MOTION_JITTER",
+          "PHYSICAL_METRIC_FAILURE"
+        ],
+        "affected_segments": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "diagnostic_codes": [
+          "TMR_THRESHOLD_UNCALIBRATED",
+          "KINEMATIC_JITTER",
+          "EVENT_MISSING",
+          "MLLM_UNCERTAIN",
+          "MLLM_UNCERTAIN",
+          "MOTIONCRITIC_UNAVAILABLE",
+          "SEMANTIC_MISMATCH",
+          "DIRECTION_MISMATCH",
+          "MOTION_JITTER",
+          "PHYSICAL_METRIC_FAILURE"
+        ]
+      },
+      "diagnosis": {
+        "status": "ambiguous",
+        "primary_failures": [
+          "TMR_THRESHOLD_UNCALIBRATED",
+          "KINEMATIC_JITTER",
+          "EVENT_MISSING",
+          "MLLM_UNCERTAIN",
+          "MLLM_UNCERTAIN",
+          "MOTIONCRITIC_UNAVAILABLE",
+          "SEMANTIC_MISMATCH",
+          "DIRECTION_MISMATCH",
+          "JITTER_FAILURE",
+          "PHYSICAL_METRIC_FAILURE"
+        ],
+        "root_causes": [
+          "VERIFIER_INFRASTRUCTURE_FAILURE",
+          "SAMPLING_VARIANCE",
+          "GENERATION_SEMANTIC_EXECUTION_FAILURE",
+          "VERIFIER_INFRASTRUCTURE_FAILURE",
+          "VERIFIER_INFRASTRUCTURE_FAILURE",
+          "UNKNOWN",
+          "GENERATION_SEMANTIC_EXECUTION_FAILURE",
+          "PHYSICAL_SAMPLING_ARTIFACT"
+        ],
+        "target_segments": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "proposal_summaries": [
+          {
+            "proposal_id": "repair_01c2d6cfe07f",
+            "action": "STOP_FAILED",
+            "reason_code": "UNRECOVERABLE_TOOL_FAILURE",
+            "target_segments": null,
+            "confidence": 0.7999999999999999,
+            "repair_family": "STOP_UNRESOLVABLE",
+            "failure_signature": "6f7aade94aeb94193926a0c6a8bc77f4d2eee7ab5a38b47ae9c640e8d5d94c1d",
+            "proposal_fingerprint": "cae6732adf412f0c4252197203f6c59cf4ef1b4e29d5c7f30c9ab57ece81e33e",
+            "parameters": {}
+          },
+          {
+            "proposal_id": "repair_ead984dd64dc",
+            "action": "GENERATE",
+            "reason_code": "NATURALNESS_FAILURE",
+            "target_segments": null,
+            "confidence": 0.74,
+            "repair_family": "REGENERATE",
+            "failure_signature": "ca9b92e6d46e68ff291af8ab201eda5da83b729f705af29351b427a98a64de97",
+            "proposal_fingerprint": "f45a70c10289fdab3bf72849e8e194b12a4cc43d11f13fc3126943ce4252fb0a",
+            "parameters": {
+              "strategy": "normal",
+              "scope": "full",
+              "num_candidates": 1,
+              "reward_targets": []
+            }
+          },
+          {
+            "proposal_id": "repair_fb6286551d08",
+            "action": "GENERATE",
+            "reason_code": "SEMANTIC_FAILURE",
+            "target_segments": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "confidence": 0.84,
+            "repair_family": "REGENERATE",
+            "failure_signature": "4367f7cbe7487daa3a3aa0fc82b09edb23968921b0c4b74dd7663fd4beb9f3b5",
+            "proposal_fingerprint": "c95862bf7ac8a1df3f023cac6a1a04d2d79feae65a097ef5680727d1dd0ddc3c",
+            "parameters": {
+              "strategy": "normal",
+              "scope": "segment",
+              "num_candidates": 1,
+              "reward_targets": []
+            }
+          }
+        ],
+        "terminal_hint": null
+      },
+      "terminal_reason": null,
+      "executed_artifacts": [
+        {
+          "handle": "diag_56380b694f2d",
+          "diagnosis": {
+            "diagnosis_id": "diag_56380b694f2d",
+            "status": "ambiguous",
+            "diagnosis_summary": "Diagnosed 10 failure(s); root causes: VERIFIER_INFRASTRUCTURE_FAILURE, SAMPLING_VARIANCE, GENERATION_SEMANTIC_EXECUTION_FAILURE, VERIFIER_INFRASTRUCTURE_FAILURE, VERIFIER_INFRASTRUCTURE_FAILURE, UNKNOWN, GENERATION_SEMANTIC_EXECUTION_FAILURE, PHYSICAL_SAMPLING_ARTIFACT; proposed planner actions: STOP_FAILED, GENERATE, GENERATE, STOP_FAILED, STOP_FAILED, STOP_FAILED, GENERATE, GENERATE.",
+            "repair_proposals": [
+              {
+                "proposal_id": "repair_01c2d6cfe07f",
+                "repair_family": "STOP_UNRESOLVABLE",
+                "planner_action": "STOP_FAILED",
+                "reason_code": "UNRECOVERABLE_TOOL_FAILURE",
+                "target_segments": null,
+                "target_body_parts": [],
+                "focus": [
+                  "unresolvable"
+                ],
+                "parameters": {},
+                "evidence_refs": [
+                  "failure_9404141c1866",
+                  "failure_a1906319ff4c"
+                ],
+                "expected_effect": "Surface unresolved failure to the Planner for terminal handling.",
+                "preserve_requirements": [
+                  "check:technical",
+                  "check:physical_foot_skating",
+                  "check:physical_ground_penetration"
+                ],
+                "confidence": 0.7999999999999999,
+                "blocked": false,
+                "rejected_reason": null,
+                "failure_signature": "6f7aade94aeb94193926a0c6a8bc77f4d2eee7ab5a38b47ae9c640e8d5d94c1d",
+                "proposal_fingerprint": "cae6732adf412f0c4252197203f6c59cf4ef1b4e29d5c7f30c9ab57ece81e33e"
+              },
+              {
+                "proposal_id": "repair_ead984dd64dc",
+                "repair_family": "REGENERATE",
+                "planner_action": "GENERATE",
+                "reason_code": "NATURALNESS_FAILURE",
+                "target_segments": null,
+                "target_body_parts": [],
+                "focus": [
+                  "naturalness"
+                ],
+                "parameters": {
+                  "strategy": "normal",
+                  "scope": "full",
+                  "num_candidates": 1,
+                  "reward_targets": []
+                },
+                "evidence_refs": [
+                  "failure_61fd278a168b",
+                  "failure_ada1b1d05336"
+                ],
+                "expected_effect": "Regenerate the failed scope to reduce artifacts while preserving validated semantics.",
+                "preserve_requirements": [
+                  "check:technical",
+                  "check:physical_foot_skating",
+                  "check:physical_ground_penetration"
+                ],
+                "confidence": 0.74,
+                "blocked": false,
+                "rejected_reason": null,
+                "failure_signature": "ca9b92e6d46e68ff291af8ab201eda5da83b729f705af29351b427a98a64de97",
+                "proposal_fingerprint": "f45a70c10289fdab3bf72849e8e194b12a4cc43d11f13fc3126943ce4252fb0a"
+              },
+              {
+                "proposal_id": "repair_fb6286551d08",
+                "repair_family": "REGENERATE",
+                "planner_action": "GENERATE",
+                "reason_code": "SEMANTIC_FAILURE",
+                "target_segments": [
+                  0,
+                  1,
+                  2,
+                  3
+                ],
+                "target_body_parts": [],
+                "focus": [
+                  "event_execution"
+                ],
+                "parameters": {
+                  "strategy": "normal",
+                  "scope": "segment",
+                  "num_candidates": 1,
+                  "reward_targets": []
+                },
+                "evidence_refs": [
+                  "failure_8f3429fbe45d"
+                ],
+                "expected_effect": "Regenerate while preserving the verified MotionSpecification and failed event requirements.",
+                "preserve_requirements": [
+                  "check:technical",
+                  "check:physical_foot_skating",
+                  "check:physical_ground_penetration"
+                ],
+                "confidence": 0.84,
+                "blocked": false,
+                "rejected_reason": null,
+                "failure_signature": "4367f7cbe7487daa3a3aa0fc82b09edb23968921b0c4b74dd7663fd4beb9f3b5",
+                "proposal_fingerprint": "c95862bf7ac8a1df3f023cac6a1a04d2d79feae65a097ef5680727d1dd0ddc3c"
+              }
+            ],
+            "terminal_hint": null
+          }
+        }
+      ]
+    },
+    {
+      "order": 8,
+      "timestamp": "2026-10-03T00:41:59.365108+00:00",
+      "node": "planner_decision_committed",
+      "round": 1,
+      "input_artifact_handles": [],
+      "output_artifact_handles": [
+        "planner_decision_b7fe0e6d1a8db711"
+      ],
+      "budget": {
+        "iterations_left": 32,
+        "generations_left": 1,
+        "retrieval_calls_left": 4,
+        "guided_generations_left": 1,
+        "planner_steps_left": 7,
+        "repairs_left": 0,
+        "llm_judge_calls_left": null,
+        "max_total_candidates_left": null
+      },
+      "candidate_id": "cand_62029139ee35ecf7",
+      "verification": {
+        "status": "incomplete",
+        "overall_pass": false,
+        "passed_check_ids": [
+          "technical",
+          "physical_foot_skating",
+          "physical_ground_penetration"
+        ],
+        "failed_check_ids": [
+          "naturalness_kinematic",
+          "event_integrity",
+          "semantic_compositional",
+          "direction_2",
+          "physical_smoothness",
+          "physical"
+        ],
+        "warning_check_ids": [],
+        "uncertain_check_ids": [
+          "semantic",
+          "event_temporal",
+          "event_frequency_1",
+          "motioncritic"
+        ],
+        "critical_failures": [
+          "TMR_THRESHOLD_UNCALIBRATED",
+          "KINEMATIC_JITTER",
+          "EVENT_MISSING",
+          "MLLM_UNCERTAIN",
+          "MLLM_UNCERTAIN",
+          "MOTIONCRITIC_UNAVAILABLE",
+          "SEMANTIC_MISMATCH",
+          "DIRECTION_MISMATCH",
+          "MOTION_JITTER",
+          "PHYSICAL_METRIC_FAILURE"
+        ],
+        "affected_segments": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "diagnostic_codes": [
+          "TMR_THRESHOLD_UNCALIBRATED",
+          "KINEMATIC_JITTER",
+          "EVENT_MISSING",
+          "MLLM_UNCERTAIN",
+          "MLLM_UNCERTAIN",
+          "MOTIONCRITIC_UNAVAILABLE",
+          "SEMANTIC_MISMATCH",
+          "DIRECTION_MISMATCH",
+          "MOTION_JITTER",
+          "PHYSICAL_METRIC_FAILURE"
+        ]
+      },
+      "diagnosis": {
+        "status": "ambiguous",
+        "primary_failures": [
+          "TMR_THRESHOLD_UNCALIBRATED",
+          "KINEMATIC_JITTER",
+          "EVENT_MISSING",
+          "MLLM_UNCERTAIN",
+          "MLLM_UNCERTAIN",
+          "MOTIONCRITIC_UNAVAILABLE",
+          "SEMANTIC_MISMATCH",
+          "DIRECTION_MISMATCH",
+          "JITTER_FAILURE",
+          "PHYSICAL_METRIC_FAILURE"
+        ],
+        "root_causes": [
+          "VERIFIER_INFRASTRUCTURE_FAILURE",
+          "SAMPLING_VARIANCE",
+          "GENERATION_SEMANTIC_EXECUTION_FAILURE",
+          "VERIFIER_INFRASTRUCTURE_FAILURE",
+          "VERIFIER_INFRASTRUCTURE_FAILURE",
+          "UNKNOWN",
+          "GENERATION_SEMANTIC_EXECUTION_FAILURE",
+          "PHYSICAL_SAMPLING_ARTIFACT"
+        ],
+        "target_segments": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "proposal_summaries": [
+          {
+            "proposal_id": "repair_01c2d6cfe07f",
+            "action": "STOP_FAILED",
+            "reason_code": "UNRECOVERABLE_TOOL_FAILURE",
+            "target_segments": null,
+            "confidence": 0.7999999999999999,
+            "repair_family": "STOP_UNRESOLVABLE",
+            "failure_signature": "6f7aade94aeb94193926a0c6a8bc77f4d2eee7ab5a38b47ae9c640e8d5d94c1d",
+            "proposal_fingerprint": "cae6732adf412f0c4252197203f6c59cf4ef1b4e29d5c7f30c9ab57ece81e33e",
+            "parameters": {}
+          },
+          {
+            "proposal_id": "repair_ead984dd64dc",
+            "action": "GENERATE",
+            "reason_code": "NATURALNESS_FAILURE",
+            "target_segments": null,
+            "confidence": 0.74,
+            "repair_family": "REGENERATE",
+            "failure_signature": "ca9b92e6d46e68ff291af8ab201eda5da83b729f705af29351b427a98a64de97",
+            "proposal_fingerprint": "f45a70c10289fdab3bf72849e8e194b12a4cc43d11f13fc3126943ce4252fb0a",
+            "parameters": {
+              "strategy": "normal",
+              "scope": "full",
+              "num_candidates": 1,
+              "reward_targets": []
+            }
+          },
+          {
+            "proposal_id": "repair_fb6286551d08",
+            "action": "GENERATE",
+            "reason_code": "SEMANTIC_FAILURE",
+            "target_segments": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "confidence": 0.84,
+            "repair_family": "REGENERATE",
+            "failure_signature": "4367f7cbe7487daa3a3aa0fc82b09edb23968921b0c4b74dd7663fd4beb9f3b5",
+            "proposal_fingerprint": "c95862bf7ac8a1df3f023cac6a1a04d2d79feae65a097ef5680727d1dd0ddc3c",
+            "parameters": {
+              "strategy": "normal",
+              "scope": "segment",
+              "num_candidates": 1,
+              "reward_targets": []
+            }
+          }
+        ],
+        "terminal_hint": null
+      },
+      "terminal_reason": null,
+      "executed_artifacts": [
+        {
+          "handle": "planner_decision_b7fe0e6d1a8db711",
+          "planner_decision": {
+            "schema": "PlannerDecision",
+            "action": "GENERATE",
+            "reason_code": "SEMANTIC_FAILURE",
+            "target_segments": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "reason_summary": "Regenerate the affected segments to address semantic and direction mismatches.",
+            "payload": {
+              "strategy": "normal",
+              "scope": "segment",
+              "num_candidates": 1,
+              "reward_targets": []
+            }
+          }
+        }
+      ]
+    },
+    {
+      "order": 9,
+      "timestamp": "2026-10-03T00:42:07.779746+00:00",
+      "node": "generation_committed",
+      "round": 2,
+      "input_artifact_handles": [],
+      "output_artifact_handles": [
+        "gen_398df601d607",
+        "cand_d442a42f1adee871"
+      ],
+      "budget": {
+        "iterations_left": 31,
+        "generations_left": 0,
+        "retrieval_calls_left": 4,
+        "guided_generations_left": 1,
+        "planner_steps_left": 7,
+        "repairs_left": 0,
+        "llm_judge_calls_left": null,
+        "max_total_candidates_left": null
+      },
+      "candidate_id": null,
+      "verification": null,
+      "diagnosis": null,
+      "terminal_reason": null,
+      "executed_artifacts": [
+        {
+          "handle": "gen_398df601d607",
+          "generation": {
+            "status": "success",
+            "candidates": [
+              {
+                "candidate_id": "cand_d442a42f1adee871",
+                "seed": 486847130
+              }
+            ]
+          }
+        },
+        {
+          "handle": "cand_d442a42f1adee871"
+        }
+      ]
+    },
+    {
+      "order": 10,
+      "timestamp": "2026-10-03T00:42:07.862622+00:00",
+      "node": "k1_selection_committed",
+      "round": 2,
+      "input_artifact_handles": [],
+      "output_artifact_handles": [
+        "selection_2168bf6490768724"
+      ],
+      "budget": {
+        "iterations_left": 30,
+        "generations_left": 0,
+        "retrieval_calls_left": 4,
+        "guided_generations_left": 1,
+        "planner_steps_left": 7,
+        "repairs_left": 0,
+        "llm_judge_calls_left": null,
+        "max_total_candidates_left": null
+      },
+      "candidate_id": "cand_d442a42f1adee871",
+      "verification": null,
+      "diagnosis": null,
+      "terminal_reason": null,
+      "executed_artifacts": [
+        {
+          "handle": "selection_2168bf6490768724",
+          "k1_selection": "cand_d442a42f1adee871"
+        }
+      ]
+    },
+    {
+      "order": 11,
+      "timestamp": "2026-10-03T00:43:44.251074+00:00",
+      "node": "verification_committed",
+      "round": 2,
+      "input_artifact_handles": [],
+      "output_artifact_handles": [
+        "phase11_verify_cand_d442a42f1adee871"
+      ],
+      "budget": {
+        "iterations_left": 29,
+        "generations_left": 0,
+        "retrieval_calls_left": 4,
+        "guided_generations_left": 1,
+        "planner_steps_left": 7,
+        "repairs_left": 0,
+        "llm_judge_calls_left": null,
+        "max_total_candidates_left": null
+      },
+      "candidate_id": "cand_d442a42f1adee871",
+      "verification": {
+        "status": "incomplete",
+        "overall_pass": false,
+        "passed_check_ids": [
+          "technical",
+          "naturalness_kinematic",
+          "physical_foot_skating"
+        ],
+        "failed_check_ids": [
+          "event_integrity",
+          "semantic_compositional",
+          "direction_2",
+          "physical_ground_penetration",
+          "physical_smoothness",
+          "physical"
+        ],
+        "warning_check_ids": [],
+        "uncertain_check_ids": [
+          "semantic",
+          "event_temporal",
+          "event_frequency_1",
+          "motioncritic"
+        ],
+        "critical_failures": [
+          "TMR_THRESHOLD_UNCALIBRATED",
+          "EVENT_MISSING",
+          "MLLM_UNCERTAIN",
+          "MLLM_UNCERTAIN",
+          "MOTIONCRITIC_UNAVAILABLE",
+          "SEMANTIC_MISMATCH",
+          "DIRECTION_MISMATCH",
+          "GROUND_PENETRATION",
+          "MOTION_JITTER",
+          "PHYSICAL_METRIC_FAILURE"
+        ],
+        "affected_segments": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "diagnostic_codes": [
+          "TMR_THRESHOLD_UNCALIBRATED",
+          "EVENT_MISSING",
+          "MLLM_UNCERTAIN",
+          "MLLM_UNCERTAIN",
+          "MOTIONCRITIC_UNAVAILABLE",
+          "SEMANTIC_MISMATCH",
+          "DIRECTION_MISMATCH",
+          "GROUND_PENETRATION",
+          "MOTION_JITTER",
+          "PHYSICAL_METRIC_FAILURE"
+        ]
+      },
+      "diagnosis": null,
+      "terminal_reason": null,
+      "executed_artifacts": [
+        {
+          "handle": "phase11_verify_cand_d442a42f1adee871",
+          "verification": {
+            "candidate_id": "cand_d442a42f1adee871",
+            "verification_id": "phase11_verify_cand_d442a42f1adee871",
+            "status": "incomplete",
+            "overall_pass": false,
+            "findings": [
+              {
+                "check_id": "technical",
+                "direction": "technical",
+                "status": "pass",
+                "required": true,
+                "diagnostic_code": null,
+                "expected": {},
+                "observed": {
+                  "shape": [
+                    420,
+                    151
+                  ],
+                  "smpl_keys": [
+                    "betas",
+                    "body_pose",
+                    "global_orient",
+                    "transl"
+                  ]
+                },
+                "measured_value": null,
+                "threshold": null
+              },
+              {
+                "check_id": "semantic",
+                "direction": "semantic",
+                "status": "uncertain",
+                "required": true,
+                "diagnostic_code": "TMR_THRESHOLD_UNCALIBRATED",
+                "expected": {},
+                "observed": {
+                  "semantic_text": "A person performs these actions: walk forward; wave right hand; turn left; sit down.",
+                  "feature_shape": [
+                    279,
+                    263
+                  ],
+                  "score_scale": "(cosine+1)/2",
+                  "threshold_status": "PROVISIONAL",
+                  "source": "real_tmr"
+                },
+                "measured_value": 0.6903961300849915,
+                "threshold": null
+              },
+              {
+                "check_id": "naturalness_kinematic",
+                "direction": "naturalness",
+                "status": "pass",
+                "required": true,
+                "diagnostic_code": null,
+                "expected": {},
+                "observed": {
+                  "root_jerk_m_s3": 20.11578369140625,
+                  "root_acceleration_m_s2": 1.286576509475708,
+                  "body_rotation_step_rad": 0.09644535183906555,
+                  "source": "actual_smpl_parameters"
+                },
+                "measured_value": 20.11578369140625,
+                "threshold": 100.0
+              },
+              {
+                "check_id": "event_integrity",
+                "direction": "event_integrity",
+                "status": "fail",
+                "required": true,
+                "diagnostic_code": "EVENT_MISSING",
+                "expected": {
+                  "events": [
+                    {
+                      "event_id": "0:walk",
+                      "segment_id": 0,
+                      "action": "walk",
+                      "body_parts": [
+                        "full_body"
+                      ],
+                      "direction": "forward"
+                    },
+                    {
+                      "event_id": "1:wave",
+                      "segment_id": 1,
+                      "action": "wave",
+                      "body_parts": [
+                        "right_hand"
+                      ],
+                      "direction": null
+                    },
+                    {
+                      "event_id": "2:turn",
+                      "segment_id": 2,
+                      "action": "turn",
+                      "body_parts": [
+                        "full_body"
+                      ],
+                      "direction": null
+                    },
+                    {
+                      "event_id": "3:sit_down",
+                      "segment_id": 3,
+                      "action": "sit_down",
+                      "body_parts": [
+                        "full_body"
+                      ],
+                      "direction": null
+                    }
+                  ]
+                },
+                "observed": {
+                  "status": "uncertain",
+                  "observed_actions": [
+                    "An arm on the character's marked right side rises and remains extended, consistent with a wave.",
+                    "The character changes facing orientation, consistent with a turn.",
+                    "The character bends its knees and lowers its body toward a seated-like posture."
+                  ],
+                  "missing_actions": [
+                    "Forward walking is not clearly established.",
+                    "A completed seated posture is not clearly visible."
+                  ],
+                  "body_part_match": true,
+                  "direction_match": null,
+                  "confidence": 0.67,
+                  "evidence": [
+                    {
+                      "timestamp_s": 0.0,
+                      "observation": "The character is upright near the center of the grid."
+                    },
+                    {
+                      "timestamp_s": 1.8667,
+                      "observation": "The arm on the side marked R begins to rise."
+                    },
+                    {
+                      "timestamp_s": 2.2667,
+                      "observation": "That arm is raised and extended; the legs remain beneath the upright torso."
+                    },
+                    {
+                      "timestamp_s": 5.5,
+                      "observation": "The character has a different facing orientation from the earlier raised-arm pose."
+                    },
+                    {
+                      "timestamp_s": 10.5,
+                      "observation": "The character is still upright."
+                    },
+                    {
+                      "timestamp_s": 12.5,
+                      "observation": "The knees are bent and the body is lowered, but the small image does not clearly distinguish sitting from crouching."
+                    }
+                  ],
+                  "source": "real_mllm",
+                  "provider": "openai",
+                  "model": "gpt-6-sol",
+                  "attempts": 1,
+                  "prompt_version": "event_integrity_visual_v2"
+                },
+                "measured_value": null,
+                "threshold": null
+              },
+              {
+                "check_id": "event_temporal",
+                "direction": "event_temporal",
+                "status": "uncertain",
+                "required": true,
+                "diagnostic_code": "MLLM_UNCERTAIN",
+                "expected": {
+                  "events": [
+                    {
+                      "event_id": "0:walk",
+                      "segment_id": 0,
+                      "action": "walk",
+                      "body_parts": [
+                        "full_body"
+                      ],
+                      "direction": "forward"
+                    },
+                    {
+                      "event_id": "1:wave",
+                      "segment_id": 1,
+                      "action": "wave",
+                      "body_parts": [
+                        "right_hand"
+                      ],
+                      "direction": null
+                    },
+                    {
+                      "event_id": "2:turn",
+                      "segment_id": 2,
+                      "action": "turn",
+                      "body_parts": [
+                        "full_body"
+                      ],
+                      "direction": null
+                    },
+                    {
+                      "event_id": "3:sit_down",
+                      "segment_id": 3,
+                      "action": "sit_down",
+                      "body_parts": [
+                        "full_body"
+                      ],
+                      "direction": null
+                    }
+                  ],
+                  "relations": [
+                    {
+                      "type": "simultaneous",
+                      "left": "0:walk",
+                      "right": "1:wave"
+                    },
+                    {
+                      "type": "before",
+                      "left": "0:walk",
+                      "right": "2:turn"
+                    },
+                    {
+                      "type": "before",
+                      "left": "0:walk",
+                      "right": "3:sit_down"
+                    },
+                    {
+                      "type": "simultaneous",
+                      "left": "1:wave",
+                      "right": "1:walk"
+                    },
+                    {
+                      "type": "before",
+                      "left": "1:wave",
+                      "right": "2:turn"
+                    },
+                    {
+                      "type": "before",
+                      "left": "1:wave",
+                      "right": "3:sit_down"
+                    },
+                    {
+                      "type": "before",
+                      "left": "2:turn",
+                      "right": "3:sit_down"
+                    }
+                  ],
+                  "expected_order": [
+                    "0:walk",
+                    "1:wave",
+                    "2:turn",
+                    "3:sit_down"
+                  ]
+                },
+                "observed": {
+                  "status": "uncertain",
+                  "expected_order": [
+                    "0:walk",
+                    "1:wave",
+                    "2:turn",
+                    "3:sit_down"
+                  ],
+                  "observed_order": [
+                    "1:wave",
+                    "3:sit_down"
+                  ],
+                  "relation_match": null,
+                  "observed_intervals": [
+                    {
+                      "event_id": "1:wave",
+                      "start_s": 1.7333,
+                      "end_s": 4.2667
+                    },
+                    {
+                      "event_id": "3:sit_down",
+                      "start_s": 10.7333,
+                      "end_s": 12.7333
+                    }
+                  ],
+                  "confidence": 0.38,
+                  "evidence": [
+                    {
+                      "timestamp_s": 1.7333,
+                      "observation": "One arm begins rising; the figure's position appears nearly unchanged."
+                    },
+                    {
+                      "timestamp_s": 2.2667,
+                      "observation": "The arm is raised and extended, but the small figure makes a repeated wave and anatomical right-hand identification unclear."
+                    },
+                    {
+                      "timestamp_s": 4.2667,
+                      "observation": "The arm has lowered. A full-body turn is not clear from the sampled views."
+                    },
+                    {
+                      "timestamp_s": 9.0,
+                      "observation": "There is slight apparent displacement, but the leg motion and forward walking direction are unclear."
+                    },
+                    {
+                      "timestamp_s": 10.7333,
+                      "observation": "The figure begins bending downward."
+                    },
+                    {
+                      "timestamp_s": 12.7333,
+                      "observation": "The figure remains low, but the view does not clearly distinguish sitting from crouching."
+                    }
+                  ],
+                  "source": "real_mllm",
+                  "provider": "openai",
+                  "model": "gpt-6-sol",
+                  "attempts": 2,
+                  "prompt_version": "event_temporal_visual_v2"
+                },
+                "measured_value": null,
+                "threshold": null
+              },
+              {
+                "check_id": "event_frequency_1",
+                "direction": "event_frequency",
+                "status": "uncertain",
+                "required": true,
+                "diagnostic_code": "MLLM_UNCERTAIN",
+                "expected": {
+                  "event": "wave",
+                  "body_parts": [
+                    "right_hand"
+                  ],
+                  "expected_count": 3,
+                  "target_segments": [
+                    1
+                  ]
+                },
+                "observed": {
+                  "status": "uncertain",
+                  "event": "wave",
+                  "body_part": "right_hand",
+                  "expected_count": 3,
+                  "observed_count": null,
+                  "confidence": 0.68,
+                  "evidence_timestamps": [
+                    1.7333,
+                    2.2667,
+                    4.2667
+                  ],
+                  "body_part_match": null,
+                  "source": "real_mllm",
+                  "provider": "openai",
+                  "model": "gpt-6-sol",
+                  "attempts": 2,
+                  "prompt_version": "event_frequency_visual_v2"
+                },
+                "measured_value": null,
+                "threshold": null
+              },
+              {
+                "check_id": "motioncritic",
+                "direction": "naturalness",
+                "status": "uncertain",
+                "required": true,
+                "diagnostic_code": "MOTIONCRITIC_UNAVAILABLE",
+                "expected": {},
+                "observed": {},
+                "measured_value": null,
+                "threshold": null
+              },
+              {
+                "check_id": "semantic_compositional",
+                "direction": "semantic",
+                "status": "fail",
+                "required": true,
+                "diagnostic_code": "SEMANTIC_MISMATCH",
+                "expected": {
+                  "events": [
+                    {
+                      "event_id": "0:walk",
+                      "segment_id": 0,
+                      "action": "walk",
+                      "body_parts": [
+                        "full_body"
+                      ],
+                      "direction": "forward"
+                    },
+                    {
+                      "event_id": "1:wave",
+                      "segment_id": 1,
+                      "action": "wave",
+                      "body_parts": [
+                        "right_hand"
+                      ],
+                      "direction": null
+                    },
+                    {
+                      "event_id": "2:turn",
+                      "segment_id": 2,
+                      "action": "turn",
+                      "body_parts": [
+                        "full_body"
+                      ],
+                      "direction": null
+                    },
+                    {
+                      "event_id": "3:sit_down",
+                      "segment_id": 3,
+                      "action": "sit_down",
+                      "body_parts": [
+                        "full_body"
+                      ],
+                      "direction": null
+                    }
+                  ]
+                },
+                "observed": {
+                  "status": "uncertain",
+                  "observed_actions": [
+                    "An arm lifts and extends between 2.0s and 3.5s, then lowers by 4.5s.",
+                    "The full body changes orientation between 5.0s and 8.0s.",
+                    "The figure lowers into a bent-knee posture between 11.0s and 13.97s."
+                  ],
+                  "missing_actions": [
+                    "Forward walking is not clear from the sampled images.",
+                    "The raised hand cannot be reliably identified as the anatomical right hand.",
+                    "A seated posture, rather than a crouch, is not clear."
+                  ],
+                  "body_part_match": null,
+                  "direction_match": null,
+                  "confidence": 0.61,
+                  "evidence": [
+                    {
+                      "timestamp_s": 2.0,
+                      "observation": "The small figure has one arm raised outward."
+                    },
+                    {
+                      "timestamp_s": 4.5,
+                      "observation": "The arm is no longer visibly raised."
+                    },
+                    {
+                      "timestamp_s": 5.0,
+                      "observation": "The figure is upright before the visible change in orientation."
+                    },
+                    {
+                      "timestamp_s": 8.0,
+                      "observation": "The figure appears more side-on than at 5.0s."
+                    },
+                    {
+                      "timestamp_s": 11.0,
+                      "observation": "The figure remains upright."
+                    },
+                    {
+                      "timestamp_s": 13.9667,
+                      "observation": "The figure is lower, with bent knees and a forward-leaning torso; a seated position is not distinguishable."
+                    }
+                  ],
+                  "source": "real_mllm",
+                  "provider": "openai",
+                  "model": "gpt-6-sol",
+                  "attempts": 1,
+                  "prompt_version": "semantic_visual_v2"
+                },
+                "measured_value": null,
+                "threshold": null
+              },
+              {
+                "check_id": "direction_2",
+                "direction": "semantic",
+                "status": "fail",
+                "required": true,
+                "diagnostic_code": "DIRECTION_MISMATCH",
+                "expected": {
+                  "direction": "left"
+                },
+                "observed": {
+                  "source": "deterministic_geometry",
+                  "units": "degrees",
+                  "left_positive": true
+                },
+                "measured_value": -16.259280213302432,
+                "threshold": 0.0
+              },
+              {
+                "check_id": "physical_foot_skating",
+                "direction": "physical",
+                "status": "pass",
+                "required": true,
+                "diagnostic_code": null,
+                "expected": {},
+                "observed": {},
+                "measured_value": 0.08877800405025482,
+                "threshold": 0.2
+              },
+              {
+                "check_id": "physical_ground_penetration",
+                "direction": "physical",
+                "status": "fail",
+                "required": true,
+                "diagnostic_code": "GROUND_PENETRATION",
+                "expected": {},
+                "observed": {},
+                "measured_value": 1.0850834846496582,
+                "threshold": 0.02
+              },
+              {
+                "check_id": "physical_smoothness",
+                "direction": "physical",
+                "status": "fail",
+                "required": true,
+                "diagnostic_code": "MOTION_JITTER",
+                "expected": {},
+                "observed": {},
+                "measured_value": 15.065988540649414,
+                "threshold": 10.0
+              },
+              {
+                "check_id": "physical",
+                "direction": "physical",
+                "status": "fail",
+                "required": true,
+                "diagnostic_code": "PHYSICAL_METRIC_FAILURE",
+                "expected": {},
+                "observed": {},
+                "measured_value": null,
+                "threshold": null
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "order": 12,
+      "timestamp": "2026-10-03T00:43:44.457905+00:00",
+      "node": "diagnosis_committed",
+      "round": 2,
+      "input_artifact_handles": [],
+      "output_artifact_handles": [
+        "diag_b39732cea610"
+      ],
+      "budget": {
+        "iterations_left": 28,
+        "generations_left": 0,
+        "retrieval_calls_left": 4,
+        "guided_generations_left": 1,
+        "planner_steps_left": 7,
+        "repairs_left": 0,
+        "llm_judge_calls_left": null,
+        "max_total_candidates_left": null
+      },
+      "candidate_id": "cand_d442a42f1adee871",
+      "verification": {
+        "status": "incomplete",
+        "overall_pass": false,
+        "passed_check_ids": [
+          "technical",
+          "naturalness_kinematic",
+          "physical_foot_skating"
+        ],
+        "failed_check_ids": [
+          "event_integrity",
+          "semantic_compositional",
+          "direction_2",
+          "physical_ground_penetration",
+          "physical_smoothness",
+          "physical"
+        ],
+        "warning_check_ids": [],
+        "uncertain_check_ids": [
+          "semantic",
+          "event_temporal",
+          "event_frequency_1",
+          "motioncritic"
+        ],
+        "critical_failures": [
+          "TMR_THRESHOLD_UNCALIBRATED",
+          "EVENT_MISSING",
+          "MLLM_UNCERTAIN",
+          "MLLM_UNCERTAIN",
+          "MOTIONCRITIC_UNAVAILABLE",
+          "SEMANTIC_MISMATCH",
+          "DIRECTION_MISMATCH",
+          "GROUND_PENETRATION",
+          "MOTION_JITTER",
+          "PHYSICAL_METRIC_FAILURE"
+        ],
+        "affected_segments": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "diagnostic_codes": [
+          "TMR_THRESHOLD_UNCALIBRATED",
+          "EVENT_MISSING",
+          "MLLM_UNCERTAIN",
+          "MLLM_UNCERTAIN",
+          "MOTIONCRITIC_UNAVAILABLE",
+          "SEMANTIC_MISMATCH",
+          "DIRECTION_MISMATCH",
+          "GROUND_PENETRATION",
+          "MOTION_JITTER",
+          "PHYSICAL_METRIC_FAILURE"
+        ]
+      },
+      "diagnosis": {
+        "status": "no_valid_repair",
+        "primary_failures": [
+          "TMR_THRESHOLD_UNCALIBRATED",
+          "EVENT_MISSING",
+          "MLLM_UNCERTAIN",
+          "MLLM_UNCERTAIN",
+          "MOTIONCRITIC_UNAVAILABLE",
+          "SEMANTIC_MISMATCH",
+          "DIRECTION_MISMATCH",
+          "GROUND_PENETRATION",
+          "JITTER_FAILURE",
+          "PHYSICAL_METRIC_FAILURE"
+        ],
+        "root_causes": [
+          "VERIFIER_INFRASTRUCTURE_FAILURE",
+          "GENERATION_SEMANTIC_EXECUTION_FAILURE",
+          "VERIFIER_INFRASTRUCTURE_FAILURE",
+          "VERIFIER_INFRASTRUCTURE_FAILURE",
+          "UNKNOWN",
+          "GENERATION_SEMANTIC_EXECUTION_FAILURE",
+          "PHYSICAL_SAMPLING_ARTIFACT",
+          "SAMPLING_VARIANCE"
+        ],
+        "target_segments": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "proposal_summaries": [],
+        "terminal_hint": "BUDGET_EXHAUSTED"
+      },
+      "terminal_reason": null,
+      "executed_artifacts": [
+        {
+          "handle": "diag_b39732cea610",
+          "diagnosis": {
+            "diagnosis_id": "diag_b39732cea610",
+            "status": "no_valid_repair",
+            "diagnosis_summary": "Diagnosed 10 failure(s); root causes: VERIFIER_INFRASTRUCTURE_FAILURE, GENERATION_SEMANTIC_EXECUTION_FAILURE, VERIFIER_INFRASTRUCTURE_FAILURE, VERIFIER_INFRASTRUCTURE_FAILURE, UNKNOWN, GENERATION_SEMANTIC_EXECUTION_FAILURE, PHYSICAL_SAMPLING_ARTIFACT, SAMPLING_VARIANCE; proposed planner actions: STOP_FAILED, STOP_FAILED, STOP_FAILED, STOP_FAILED.",
+            "repair_proposals": [],
+            "terminal_hint": "BUDGET_EXHAUSTED"
+          }
+        }
+      ]
+    },
+    {
+      "order": 13,
+      "timestamp": "2026-10-03T00:43:47.373842+00:00",
+      "node": "planner_decision_committed",
+      "round": 2,
+      "input_artifact_handles": [],
+      "output_artifact_handles": [
+        "planner_decision_38598c95c5e08a2a"
+      ],
+      "budget": {
+        "iterations_left": 27,
+        "generations_left": 0,
+        "retrieval_calls_left": 4,
+        "guided_generations_left": 1,
+        "planner_steps_left": 6,
+        "repairs_left": 0,
+        "llm_judge_calls_left": null,
+        "max_total_candidates_left": null
+      },
+      "candidate_id": "cand_d442a42f1adee871",
+      "verification": {
+        "status": "incomplete",
+        "overall_pass": false,
+        "passed_check_ids": [
+          "technical",
+          "naturalness_kinematic",
+          "physical_foot_skating"
+        ],
+        "failed_check_ids": [
+          "event_integrity",
+          "semantic_compositional",
+          "direction_2",
+          "physical_ground_penetration",
+          "physical_smoothness",
+          "physical"
+        ],
+        "warning_check_ids": [],
+        "uncertain_check_ids": [
+          "semantic",
+          "event_temporal",
+          "event_frequency_1",
+          "motioncritic"
+        ],
+        "critical_failures": [
+          "TMR_THRESHOLD_UNCALIBRATED",
+          "EVENT_MISSING",
+          "MLLM_UNCERTAIN",
+          "MLLM_UNCERTAIN",
+          "MOTIONCRITIC_UNAVAILABLE",
+          "SEMANTIC_MISMATCH",
+          "DIRECTION_MISMATCH",
+          "GROUND_PENETRATION",
+          "MOTION_JITTER",
+          "PHYSICAL_METRIC_FAILURE"
+        ],
+        "affected_segments": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "diagnostic_codes": [
+          "TMR_THRESHOLD_UNCALIBRATED",
+          "EVENT_MISSING",
+          "MLLM_UNCERTAIN",
+          "MLLM_UNCERTAIN",
+          "MOTIONCRITIC_UNAVAILABLE",
+          "SEMANTIC_MISMATCH",
+          "DIRECTION_MISMATCH",
+          "GROUND_PENETRATION",
+          "MOTION_JITTER",
+          "PHYSICAL_METRIC_FAILURE"
+        ]
+      },
+      "diagnosis": {
+        "status": "no_valid_repair",
+        "primary_failures": [
+          "TMR_THRESHOLD_UNCALIBRATED",
+          "EVENT_MISSING",
+          "MLLM_UNCERTAIN",
+          "MLLM_UNCERTAIN",
+          "MOTIONCRITIC_UNAVAILABLE",
+          "SEMANTIC_MISMATCH",
+          "DIRECTION_MISMATCH",
+          "GROUND_PENETRATION",
+          "JITTER_FAILURE",
+          "PHYSICAL_METRIC_FAILURE"
+        ],
+        "root_causes": [
+          "VERIFIER_INFRASTRUCTURE_FAILURE",
+          "GENERATION_SEMANTIC_EXECUTION_FAILURE",
+          "VERIFIER_INFRASTRUCTURE_FAILURE",
+          "VERIFIER_INFRASTRUCTURE_FAILURE",
+          "UNKNOWN",
+          "GENERATION_SEMANTIC_EXECUTION_FAILURE",
+          "PHYSICAL_SAMPLING_ARTIFACT",
+          "SAMPLING_VARIANCE"
+        ],
+        "target_segments": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "proposal_summaries": [],
+        "terminal_hint": "BUDGET_EXHAUSTED"
+      },
+      "terminal_reason": null,
+      "executed_artifacts": [
+        {
+          "handle": "planner_decision_38598c95c5e08a2a",
+          "planner_decision": {
+            "schema": "PlannerDecision",
+            "action": "STOP_FAILED",
+            "reason_code": "BUDGET_EXHAUSTED",
+            "target_segments": null,
+            "reason_summary": "Generation and repair budgets are exhausted, and no valid repair remains.",
+            "payload": {}
+          }
+        }
+      ]
+    },
+    {
+      "order": 14,
+      "timestamp": "2026-10-03T00:43:47.457563+00:00",
+      "node": "stopped_failed",
+      "round": 2,
+      "input_artifact_handles": [],
+      "output_artifact_handles": [],
+      "budget": {
+        "iterations_left": 26,
+        "generations_left": 0,
+        "retrieval_calls_left": 4,
+        "guided_generations_left": 1,
+        "planner_steps_left": 6,
+        "repairs_left": 0,
+        "llm_judge_calls_left": null,
+        "max_total_candidates_left": null
+      },
+      "candidate_id": "cand_d442a42f1adee871",
+      "verification": {
+        "status": "incomplete",
+        "overall_pass": false,
+        "passed_check_ids": [
+          "technical",
+          "naturalness_kinematic",
+          "physical_foot_skating"
+        ],
+        "failed_check_ids": [
+          "event_integrity",
+          "semantic_compositional",
+          "direction_2",
+          "physical_ground_penetration",
+          "physical_smoothness",
+          "physical"
+        ],
+        "warning_check_ids": [],
+        "uncertain_check_ids": [
+          "semantic",
+          "event_temporal",
+          "event_frequency_1",
+          "motioncritic"
+        ],
+        "critical_failures": [
+          "TMR_THRESHOLD_UNCALIBRATED",
+          "EVENT_MISSING",
+          "MLLM_UNCERTAIN",
+          "MLLM_UNCERTAIN",
+          "MOTIONCRITIC_UNAVAILABLE",
+          "SEMANTIC_MISMATCH",
+          "DIRECTION_MISMATCH",
+          "GROUND_PENETRATION",
+          "MOTION_JITTER",
+          "PHYSICAL_METRIC_FAILURE"
+        ],
+        "affected_segments": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "diagnostic_codes": [
+          "TMR_THRESHOLD_UNCALIBRATED",
+          "EVENT_MISSING",
+          "MLLM_UNCERTAIN",
+          "MLLM_UNCERTAIN",
+          "MOTIONCRITIC_UNAVAILABLE",
+          "SEMANTIC_MISMATCH",
+          "DIRECTION_MISMATCH",
+          "GROUND_PENETRATION",
+          "MOTION_JITTER",
+          "PHYSICAL_METRIC_FAILURE"
+        ]
+      },
+      "diagnosis": {
+        "status": "no_valid_repair",
+        "primary_failures": [
+          "TMR_THRESHOLD_UNCALIBRATED",
+          "EVENT_MISSING",
+          "MLLM_UNCERTAIN",
+          "MLLM_UNCERTAIN",
+          "MOTIONCRITIC_UNAVAILABLE",
+          "SEMANTIC_MISMATCH",
+          "DIRECTION_MISMATCH",
+          "GROUND_PENETRATION",
+          "JITTER_FAILURE",
+          "PHYSICAL_METRIC_FAILURE"
+        ],
+        "root_causes": [
+          "VERIFIER_INFRASTRUCTURE_FAILURE",
+          "GENERATION_SEMANTIC_EXECUTION_FAILURE",
+          "VERIFIER_INFRASTRUCTURE_FAILURE",
+          "VERIFIER_INFRASTRUCTURE_FAILURE",
+          "UNKNOWN",
+          "GENERATION_SEMANTIC_EXECUTION_FAILURE",
+          "PHYSICAL_SAMPLING_ARTIFACT",
+          "SAMPLING_VARIANCE"
+        ],
+        "target_segments": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "proposal_summaries": [],
+        "terminal_hint": "BUDGET_EXHAUSTED"
+      },
+      "terminal_reason": "BUDGET_EXHAUSTED",
+      "executed_artifacts": []
+    }
+  ],
+  "final_status": "STOP_FAILED",
+  "terminal_reason": "BUDGET_EXHAUSTED",
+  "provenance": "Actual EventLog/state export; compact artifact excerpts; generation_round is 1-based"
+}

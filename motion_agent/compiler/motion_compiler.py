@@ -12,12 +12,14 @@ from motion_agent.compiler.control_intent import detect_control_intents
 from motion_agent.compiler.gem_text_compiler import compile_gem_text_condition
 from motion_agent.compiler.schemas import CompilerResult, MotionSpecification
 from motion_agent.compiler.semantic_parser import parse_motion_request
+from motion_agent.compiler.temporal_resolver import resolve_temporal_semantics
 from motion_agent.compiler.timeline_compiler import compile_timeline
 from motion_agent.compiler.validators import (
     validate_caption_length,
     validate_gem_text_condition,
     validate_heading_continuity,
     validate_motion_semantics,
+    validate_request_coverage,
     validate_timeline,
 )
 from motion_agent.state.schemas import StrictModel
@@ -32,16 +34,23 @@ class CompilerRequest(StrictModel):
     fps: int = 30
     total_frames: int = 180
     existing_motion_spec: MotionSpecification | None = None
+    retrieved_captions_by_segment: dict[int, list[str]] = Field(default_factory=dict)
 
 
 class MotionCompiler:
+    def __init__(self, semantic_backend=None) -> None:
+        self.semantic_backend = semantic_backend
+
     def compile(self, request: CompilerRequest) -> CompilerResult:
         if request.mode == "revise":
             segments = self._revise_segments(request)
         else:
-            segments = parse_motion_request(request.original_request)
+            segments = self._parse_initial(request.original_request)
 
         segments = [segment.model_copy(update={"segment_id": index}) for index, segment in enumerate(segments)]
+        segments = resolve_temporal_semantics(request.original_request, segments)
+        if request.mode == "initial":
+            validate_request_coverage(request.original_request, segments)
         segments = compile_timeline(
             segments,
             total_duration_s=request.duration_s,
@@ -50,7 +59,17 @@ class MotionCompiler:
         )
         segments = apply_heading_continuity(segments)
         hints = detect_control_intents(segments)
-        captioned = [segment.model_copy(update={"gem_caption": optimize_caption(segment)}) for segment in segments]
+        captioned = [
+            segment.model_copy(
+                update={
+                    "gem_caption": optimize_caption(
+                        segment,
+                        retrieved_captions=request.retrieved_captions_by_segment.get(segment.segment_id),
+                    )
+                }
+            )
+            for segment in segments
+        ]
         spec = MotionSpecification(
             original_request=request.original_request,
             duration_s=request.duration_s,
@@ -76,12 +95,18 @@ class MotionCompiler:
 
     def _revise_segments(self, request: CompilerRequest):
         if request.existing_motion_spec is None:
-            return parse_motion_request(request.original_request)
+            return self._parse_initial(request.original_request)
+        if set(request.focus) <= {"gem_caption"} and request.target_segments:
+            target_ids = set(request.target_segments)
+            return [
+                segment.model_copy(update={"gem_caption": None}) if segment.segment_id in target_ids else segment
+                for segment in request.existing_motion_spec.segments
+            ]
         if not request.target_segments:
             return request.existing_motion_spec.segments
 
         target_ids = set(request.target_segments)
-        replacements = parse_motion_request(request.original_request)
+        replacements = self._parse_initial(request.original_request)
         if len(replacements) == 1 and len(target_ids) == 1:
             target_id = next(iter(target_ids))
             replacement = replacements[0].model_copy(update={"segment_id": target_id})
@@ -102,6 +127,22 @@ class MotionCompiler:
         target_ids = request.target_segments or []
         return list(target_ids)
 
+    def _parse_initial(self, original_request: str):
+        if self.semantic_backend is None:
+            return parse_motion_request(original_request)
+        return self.semantic_backend.parse(original_request)
+
 
 def compile_motion(request: CompilerRequest) -> CompilerResult:
     return MotionCompiler().compile(request)
+
+
+class RealLLMMotionCompiler(MotionCompiler):
+    """Motion compiler with a real LLM semantic parser and deterministic validators."""
+
+    def __init__(self, semantic_backend=None) -> None:
+        if semantic_backend is None:
+            from motion_agent.compiler.llm_semantic_parser import LLMSemanticParserBackend
+
+            semantic_backend = LLMSemanticParserBackend()
+        super().__init__(semantic_backend=semantic_backend)

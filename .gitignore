@@ -1,5 +1,6 @@
 # Python environments and caches
 .venv/
+.venv*/
 venv/
 env/
 **/.venv/
@@ -21,6 +22,7 @@ Thumbs.db
 # Credentials and machine-local connection material
 .env
 .env.*
+!.env.example
 *.pem
 *.key
 id_rsa*
@@ -54,6 +56,10 @@ outputs/
 # MotionAgent's small adapter/demo patch lives under integrations/GENMO/.
 vendor/GENMO/
 vendor/GENMO/**
+vendor/TMR/
+vendor/MotionCritic/
+*.ckpt.partial
+*.tar.gz
 
 # Committed README demo asset
 !docs/

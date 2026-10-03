@@ -26,7 +26,7 @@ def make_action_node(runtime: ToolRuntime, node_name: str):
             raise ValueError(f"{node_name} requires planner_decision")
         decision = PlannerDecision.model_validate(envelope.planner_decision)
         state = runtime.state_store.load_latest(envelope.run_id)
-        executor = ACTION_EXECUTORS[decision.action]
+        executor = (runtime.action_executors or {}).get(decision.action, ACTION_EXECUTORS[decision.action])
         new_state = executor(runtime, state, decision)
         return _commit_envelope(envelope, node_name=node_name, state_version=new_state.state_version)
 
@@ -37,6 +37,12 @@ def make_accept_node(runtime: ToolRuntime):
     def accept_node(graph_state: GraphState | dict) -> dict:
         envelope = GraphState.model_validate(graph_state)
         state = runtime.state_store.load_latest(envelope.run_id)
+        from motion_agent.agent.guards import validate_planner_decision
+        from motion_agent.agent.actions import PlannerAction
+        validate_planner_decision(state, PlannerDecision(
+            action=PlannerAction.ACCEPT, reason_code="ALL_REQUIRED_CHECKS_PASSED",
+            reason_summary="Accept verified candidate.", payload={},
+        ))
         new_state = runtime.reducer.accept(state)
         new_state = runtime.state_store.commit(
             new_state,
@@ -82,4 +88,3 @@ def make_stop_failed_node(runtime: ToolRuntime):
         ).model_dump(mode="python")
 
     return stop_failed_node
-

@@ -4,6 +4,12 @@
 
 # 7. Constraint Compiler
 
+> Phase 7 scope revision: `HardMotionCondition`, masks, reward targets and
+> verification specifications are generator inputs and future guidance
+> interfaces. Construction, forwarding and persistence are validated now;
+> actual constraint satisfaction is deferred to Guided Generation. See
+> `08_gem_generation_tool.md`, "Phase 7 Infrastructure Scope (Revised)".
+
 本节定义 Constraint Compiler 的**实现规范**。
 
 Constraint Compiler 的职责是：

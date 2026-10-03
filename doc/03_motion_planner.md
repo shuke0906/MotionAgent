@@ -34,6 +34,20 @@ Planner 只负责：
 → 给出该 action 所需的结构化参数
 ```
 
+Planner 不解析或消解自然语言中的时间重复语义。以下表达：
+
+```text
+three times
+twice
+repeatedly
+continuously
+```
+
+均由 Motion Compiler 内部的 Temporal Resolver 归一化为结构化
+`temporal_constraint` / `temporal_mode`。Planner 只在 Verification 或
+Diagnosis 报告 temporal / frequency failure 时选择 `COMPILE_MOTION` 或其他
+合法 Action，不自行推断重复次数或连续模式。
+
 Planner 不负责：
 
 ```text

@@ -12,7 +12,10 @@ from motion_agent.compiler.schemas import (
     HeadingContinuitySpec,
     MotionSegment,
     MotionSpecification,
+    TemporalConstraint,
+    TemporalRelation,
 )
+from motion_agent.compiler.temporal_resolver import resolve_temporal_semantics
 
 __all__ = [
     "CompilerRequest",
@@ -23,5 +26,8 @@ __all__ = [
     "MotionCompiler",
     "MotionSegment",
     "MotionSpecification",
+    "TemporalConstraint",
+    "TemporalRelation",
     "compile_motion",
+    "resolve_temporal_semantics",
 ]
